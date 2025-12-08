@@ -1,0 +1,36 @@
+services:
+    mysql:
+      restart: unless-stopped
+      image: mysql:8.0
+      environment:
+        MYSQL_ROOT_PASSWORD: flores_password_reservue
+        MYSQL_DATABASE: flores_db_reservue
+        MYSQL_USER: flores_user_reservue
+        MYSQL_PASSWORD: flores_password_reservue
+      ports:
+      - "3306:3306"
+      volumes:
+      - mysql_data:/var/lib/mysql
+      networks:
+      - flores_reservue_network
+
+    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: unless-stopped
+        environment:
+          PMA_HOST: mysql
+          PMA_USER: flores_user_reservue
+          PMA_PASSWORD: flores_password_reservue
+        ports:
+        - "8080:80"
+        depends_on:
+        - mysql
+        networks:
+        - flores_reservue_network
+
+volumes:
+ mysql_data:
+
+networks:
+ flores_reservue_network:

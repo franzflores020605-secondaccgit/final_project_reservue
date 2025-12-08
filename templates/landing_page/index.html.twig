@@ -48,21 +48,50 @@
                 align-items: center;
                 max-width: 1200px;
                 margin: 0 auto;
+                
             }
 
             .logo {
-                font-size: 1.8rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #8b6f47, #6b5b3f);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
+                display: flex;
+                align-items: center;
+                margin-right: 0.5rem;
             }
+
+            .logo img,
+            .logo-img {
+                height: 80px;
+                width: auto;
+                object-fit: contain;
+                display: block;
+                transition: all 0.3s ease;
+                filter: brightness(1.2) contrast(1.1);
+                backgroud:transparent;
+            }
+
+        /* Mobile responsive */
+            @media (max-width: 768px) {
+                .logo img,
+                .logo-img {
+                height: 35px;
+            }
+    
+            .navbar {
+                 padding: 0.75rem 1rem;
+            }
+            }
+
+            @media (max-width: 500px) {
+                .logo img,
+                .logo-img {
+                    height: 50px;
+            }
+        }
 
             .nav-links {
                 display: flex;
                 list-style: none;
                 gap: 2rem;
+                
             }
 
             .nav-links a {
@@ -381,7 +410,9 @@
         <!-- Navigation -->
         <nav class="navbar">
             <div class="nav-container">
-                <div class="logo">Reservue</div>
+                <div class="logo">
+                <img src="/images/logo.png" alt="Reservue Logo" class"logo-img">
+                </div>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#destinations">Destinations</a></li>

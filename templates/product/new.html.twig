@@ -1,0 +1,383 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Product{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* ===== COLOR SCHEME =====
+     * Primary Brown: #6B5B4D
+     * Dark Brown: #4A3F35
+     * Light Brown: #8B7968
+     * Accent Brown: #9B826F
+     * Light Grey: #F5F5F5
+     * Medium Grey: #E8E8E8
+     * Dark Grey: #7A7A7A
+     */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #F5F5F5;
+        color: #333;
+    }
+
+    /* ===== DASHBOARD CONTAINER ===== */
+    .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #6B5B4D 0%, #4A3F35 100%);
+        color: white;
+        padding: 20px 0;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .sidebar-logo {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .logo-img {
+        width: 120px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .sidebar-logo p {
+        color: #E8E8E8;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0 15px;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 5px;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        color: #E8E8E8;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 15px;
+    }
+
+    .sidebar-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding-left: 20px;
+    }
+
+    .sidebar-menu a.active {
+        background-color: #9B826F;
+        color: white;
+        font-weight: 500;
+    }
+
+    .sidebar-menu .icon {
+        font-size: 18px;
+        margin-right: 12px;
+        width: 24px;
+        text-align: center;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+        flex: 1;
+        margin-left: 260px;
+        padding: 30px;
+        background-color: #F5F5F5;
+    }
+
+    .product-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .product-header {
+        background: linear-gradient(135deg, #6B5438 0%, #6B5438 100%);
+        padding: 40px;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    .product-header h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .form-wrapper {
+        padding: 40px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #6B5438;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #6B5B4D;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(107, 91, 77, 0.1);
+    }
+
+    .form-control:hover {
+        border-color: #c0c0c0;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        padding: 0 40px 40px 40px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 14px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        letter-spacing: 0.3px;
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6B5B4D 0%, #4A3F35 100%);
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(107, 91, 77, 0.3);
+    }
+
+    .btn-secondary {
+        background: #d4d4d4;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #c0c0c0;
+        transform: translateY(-2px);
+    }
+
+    .form-help {
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    .required-asterisk {
+        color: #c9302c;
+        margin-left: 3px;
+    }
+
+    /* Symfony form specific styles */
+    form .form-group {
+        margin-bottom: 25px;
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #6B5438;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    form input[type="text"],
+    form input[type="number"],
+    form textarea,
+    form select {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    form input:focus,
+    form textarea:focus,
+    form select:focus {
+        outline: none;
+        border-color: #6B5B4D;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(107, 91, 77, 0.1);
+    }
+
+    form button[type="submit"] {
+        width: 100%;
+        padding: 16px 30px;
+        background: linear-gradient(135deg, #6B5B4D 0%, #4A3F35 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 0.3px;
+        margin-top: 10px;
+    }
+
+    form button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(107, 91, 77, 0.3);
+    }
+
+    .form-errors {
+        background: #ffe6e6;
+        border-left: 4px solid #c9302c;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        color: #c9302c;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 70px;
+        }
+
+        .main-content {
+            margin-left: 70px;
+            padding: 15px;
+        }
+
+        .sidebar-logo p,
+        .sidebar-menu a span:not(.icon) {
+            display: none;
+        }
+
+        .sidebar-menu a {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .product-header h1 {
+            font-size: 2rem;
+        }
+
+        .form-wrapper {
+            padding: 30px 20px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            min-width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/images/logo_white.png" alt="Reservue Logo" class="logo-img">
+            <p>Admin Dashboard</p>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="{{ path('app_dashboard') }}"><span class="icon">📊</span>Dashboard</a></li>
+            <li><a href="{{ path('app_product_index') }}" class="active"><span class="icon">📦</span>Product Inventory</a></li>
+            <li><a href="{{ path('app_bookings_index') }}"><span class="icon">🎫</span>Bookings</a></li>
+            <li><a href="{{ path('app_category_index') }}"><span class="icon">📁</span>Categories</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="product-container">
+            <div class="product-header">
+                <h1>✨ Create New Product/Offer</h1>
+            </div>
+
+            <div class="form-wrapper">
+                {{ include('product/_form.html.twig') }}
+            </div>
+
+            <div class="action-buttons">
+                <a href="{{ path('app_product_index') }}" class="btn btn-secondary">
+                    ← Back to List
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

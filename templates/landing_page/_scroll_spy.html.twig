@@ -1,0 +1,124 @@
+<script>
+    (function () {
+        var sectionIds = ['top', 'about', 'places', 'hotels', 'blog', 'contact'];
+        var nav = document.getElementById('ftco-nav');
+        var bar = document.getElementById('ftco-navbar');
+        if (!nav || !bar) {
+            return;
+        }
+
+        var links = nav.querySelectorAll('a.nav-link[data-nav-anchor]');
+
+        function setActiveSection(id) {
+            if (sectionIds.indexOf(id) === -1) {
+                return;
+            }
+            links.forEach(function (a) {
+                var sid = a.getAttribute('data-nav-anchor');
+                var on = sid === id;
+                var li = a.closest('.nav-item');
+                if (li) {
+                    li.classList.toggle('active', on);
+                }
+                if (on) {
+                    a.setAttribute('aria-current', 'page');
+                } else {
+                    a.removeAttribute('aria-current');
+                }
+            });
+        }
+
+        function markerY() {
+            var r = bar.getBoundingClientRect();
+            return r.bottom + 10;
+        }
+
+        function currentSectionId() {
+            var y = markerY();
+            var current = 'top';
+            for (var i = 0; i < sectionIds.length; i++) {
+                var el = document.getElementById(sectionIds[i]);
+                if (!el) {
+                    continue;
+                }
+                if (el.getBoundingClientRect().top <= y) {
+                    current = sectionIds[i];
+                }
+            }
+            return current;
+        }
+
+        var scrollScheduled = false;
+        var anchorTargetId = null;
+
+        function beginAnchorNavigation(id) {
+            if (sectionIds.indexOf(id) === -1) {
+                return;
+            }
+            anchorTargetId = id;
+            setActiveSection(id);
+        }
+
+        function onScrollOrResize() {
+            if (scrollScheduled) {
+                return;
+            }
+            scrollScheduled = true;
+            requestAnimationFrame(function () {
+                scrollScheduled = false;
+                if (anchorTargetId !== null) {
+                    if (currentSectionId() === anchorTargetId) {
+                        anchorTargetId = null;
+                    }
+                    return;
+                }
+                setActiveSection(currentSectionId());
+            });
+        }
+
+        window.addEventListener('scroll', onScrollOrResize, { passive: true });
+        window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+        window.addEventListener('wheel', function () {
+            if (anchorTargetId !== null) {
+                anchorTargetId = null;
+                setActiveSection(currentSectionId());
+            }
+        }, { passive: true });
+
+        links.forEach(function (a) {
+            a.addEventListener('click', function () {
+                var sid = a.getAttribute('data-nav-anchor');
+                if (sid) {
+                    beginAnchorNavigation(sid);
+                }
+            });
+        });
+
+        function onHashFromHistory() {
+            var h = (window.location.hash || '').replace(/^#/, '');
+            if (h && sectionIds.indexOf(h) !== -1) {
+                beginAnchorNavigation(h);
+            } else {
+                anchorTargetId = null;
+                requestAnimationFrame(function () {
+                    setActiveSection(currentSectionId());
+                });
+            }
+        }
+
+        window.addEventListener('hashchange', onHashFromHistory);
+        window.addEventListener('popstate', onHashFromHistory);
+
+        if (window.location.hash) {
+            var initial = window.location.hash.replace(/^#/, '');
+            if (sectionIds.indexOf(initial) !== -1) {
+                beginAnchorNavigation(initial);
+            } else {
+                setActiveSection(currentSectionId());
+            }
+        } else {
+            setActiveSection(currentSectionId());
+        }
+    })();
+</script>

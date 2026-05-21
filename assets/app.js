@@ -1,3 +1,9 @@
+import '@hotwired/turbo';
+import { config } from '@hotwired/turbo';
+
+/* Avoid the top “page loading” bar on in-app visits (dashboard SPA feels in-place). */
+config.drive.progressBarDelay = 999999;
+
 import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!

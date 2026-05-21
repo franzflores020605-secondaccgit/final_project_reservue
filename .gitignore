@@ -21,6 +21,16 @@
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
+/public/uploads/documents/*
+!/public/uploads/documents/.gitkeep
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+.env
+.env.dev
+.env.test

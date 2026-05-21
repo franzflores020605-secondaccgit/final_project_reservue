@@ -1,0 +1,30 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block dashboard_body %}
+{% set passwordRoute = is_granted('ROLE_ADMIN') ? 'app_admin_account_password' : 'app_account_password' %}
+        <div class="product-container">
+            <div class="product-header">
+                <h1>
+                    <span class="header-icon" aria-hidden="true">👤</span>
+                    My Account
+                </h1>
+                <div class="header-buttons">
+                    <a href="{{ path(passwordRoute) }}" class="btn-new" data-turbo-frame="reservue-dashboard-outlet">Change Password</a>
+                </div>
+            </div>
+            <div class="account-meta">
+                <span>Role: {{ user.displayRoleLabel }}</span>
+                <span>Joined: {{ user.createdAt ? user.createdAt|date('Y-m-d H:i') : '—' }}</span>
+                <span>Status: {{ user.status|capitalize }}</span>
+            </div>
+            <div class="table-wrapper">
+                {{ form_start(form) }}
+                    {{ form_row(form.username) }}
+                    {{ form_row(form.email) }}
+                    <button type="submit">Save Profile</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+{% endblock %}

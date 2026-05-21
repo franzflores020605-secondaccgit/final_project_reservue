@@ -1,0 +1,29 @@
+{# Same structure as product/_form.html.twig — vertical fields, uppercase labels from shared CSS #}
+{{ form_start(form, { attr: { enctype: 'multipart/form-data' } }) }}
+    {% set pkg = form.vars.data %}
+    {% if pkg.imagePath %}
+    <div class="form-group" style="margin-bottom:1rem;">
+        <label>Current photo</label>
+        <div>
+            <img src="{{ asset(pkg.imagePath) }}" alt="" style="max-width:200px;max-height:140px;object-fit:cover;border-radius:8px;border:1px solid #e8e8e8;">
+        </div>
+        <p class="form-help" style="margin-top:6px;">Choose a new file below to replace it.</p>
+    </div>
+    {% endif %}
+    {{ form_row(form.name) }}
+    {{ form_row(form.shortDescription) }}
+    {{ form_row(form.durationLabel) }}
+    {{ form_row(form.pricePerPerson) }}
+    {{ form_row(form.imageFile) }}
+    {{ form_row(form.isPublished) }}
+    {{ form_row(form.category) }}
+    <div class="form-group">
+        {{ form_label(form.products) }}
+        {{ form_help(form.products) }}
+        {{ form_errors(form.products) }}
+        <div class="product-checkbox-grid">
+            {{ form_widget(form.products) }}
+        </div>
+    </div>
+    <button class="btn" type="submit">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

@@ -1,0 +1,35 @@
+<section class="ftco-section bg-light" id="blog">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2><strong>Tips</strong> &amp; Articles</h2>
+            </div>
+        </div>
+        <div class="row d-flex">
+            {% for b in 1..3 %}
+                <div class="col-md-4 d-flex ftco-animate">
+                    <div class="blog-entry align-self-stretch">
+                        <a href="#" class="block-20" style="background-image: url('{{ asset('advanture-2/images/image_' ~ b ~ '.jpg') }}');"></a>
+                        <div class="text">
+                            <span class="tag">
+                                {% if b == 1 %}Tips, Travel{% elseif b == 2 %}Culture{% else %}Tips, Travel{% endif %}
+                            </span>
+                            <h3 class="heading mt-3">
+                                {% if b == 1 %}
+                                    <a href="#">8 Best homestay in Philippines that you don't miss out</a>
+                                {% else %}
+                                    <a href="#">Even the all-powerful Pointing has no control about the blind texts</a>
+                                {% endif %}
+                            </h3>
+                            <div class="meta mb-3">
+                                <div><a href="#">October 3, 2018</a></div>
+                                <div><a href="#">Admin</a></div>
+                                <div><a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

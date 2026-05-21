@@ -1,0 +1,41 @@
+{# Expects `team_members` from LandingPageController (max 3). #}
+<section class="ftco-section bg-white reservue-team-section" id="team">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-md-2">
+            <div class="col-lg-8 col-md-10 text-center heading-section ftco-animate">
+                <span class="subheading reservue-team-kicker">People</span>
+                <h2 class="mb-3 reservue-team-heading">Meet the Team</h2>
+                <p class="mb-0 reservue-team-lead">Friendly experts who plan, book, and support every ReserVue journey.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center reservue-team-row">
+            {% for member in team_members|slice(0, 3) %}
+                <div class="col-12 col-sm-6 col-lg-4 mb-4 mb-lg-0 d-flex">
+                    <article class="reservue-team-card ftco-animate w-100">
+                        <div class="reservue-team-photo-wrap">
+                            {% if member.photo %}
+                                <img
+                                    class="reservue-team-photo"
+                                    src="{{ asset(member.photo) }}"
+                                    alt="{{ member.name }}"
+                                    width="480"
+                                    height="600"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            {% else %}
+                                <div class="reservue-team-photo reservue-team-photo--placeholder" aria-hidden="true">
+                                    <span class="icon icon-user"></span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="reservue-team-body text-center">
+                            <h3 class="reservue-team-name">{{ member.name }}</h3>
+                            <p class="reservue-team-role">{{ member.role }}</p>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

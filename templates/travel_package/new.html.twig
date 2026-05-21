@@ -1,0 +1,18 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}New travel package{% endblock %}
+
+{% block dashboard_body %}
+        <div class="category-container">
+            <div class="category-header">
+                <h1>Create travel package</h1>
+                <div class="header-buttons">
+                    <a href="{{ path('app_travel_package_index') }}" class="btn btn-secondary" data-turbo-frame="reservue-dashboard-outlet">← Back to List</a>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                {{ include('travel_package/_form.html.twig', { button_label: 'Save' }) }}
+            </div>
+        </div>
+{% endblock %}

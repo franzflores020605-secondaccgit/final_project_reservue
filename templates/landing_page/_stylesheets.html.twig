@@ -1,0 +1,981 @@
+<link rel="stylesheet" href="{{ asset('advanture-2/css/google-fonts-local.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/open-iconic-bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/animate.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/owl.carousel.min.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/owl.theme.default.min.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/magnific-popup.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/aos.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/ionicons.min.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/bootstrap-datepicker.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/jquery.timepicker.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/flaticon.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/icomoon.css') }}">
+<link rel="stylesheet" href="{{ asset('advanture-2/css/style.css') }}">
+
+<style>
+    :root {
+        --reservue-brown: #7F5221;
+        --reservue-light-grey: #F4F5F5;
+    }
+
+    #ftco-navbar .navbar-brand {
+        display: inline-flex;
+        align-items: center;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .reservue-logo {
+        height: 44px;
+        width: auto;
+        display: block;
+    }
+
+    .reservue-logo-navbar {
+        height: 72px;
+        width: auto;
+        max-height: 76px;
+        display: block;
+        object-fit: contain;
+    }
+
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .reservue-logo-navbar {
+        filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+    }
+
+    #ftco-navbar.scrolled .reservue-logo-navbar,
+    #ftco-navbar.landing-page-inner .reservue-logo-navbar {
+        filter: none;
+    }
+
+    #ftco-navbar .nav-link {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-decoration: none !important;
+        transition: none !important;
+    }
+
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .nav-link,
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .navbar-brand {
+        color: #ffffff !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+    }
+
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .nav-link:hover,
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .nav-link:focus {
+        color: #fff8e8 !important;
+    }
+
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .navbar-toggler {
+        color: #fff !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    #ftco-navbar.scrolled .nav-link,
+    #ftco-navbar.scrolled .navbar-brand,
+    #ftco-navbar.landing-page-inner .nav-link,
+    #ftco-navbar.landing-page-inner .navbar-brand {
+        color: #2a1d0f !important;
+        text-shadow: none;
+    }
+
+    #ftco-navbar.scrolled .nav-link:hover,
+    #ftco-navbar.scrolled .nav-link:focus,
+    #ftco-navbar.landing-page-inner .nav-link:hover,
+    #ftco-navbar.landing-page-inner .nav-link:focus {
+        color: var(--reservue-brown) !important;
+    }
+
+    #ftco-navbar.scrolled .navbar-toggler,
+    #ftco-navbar.landing-page-inner .navbar-toggler {
+        color: rgba(42, 29, 15, 0.85) !important;
+    }
+
+    .ftco_navbar.landing-page-inner {
+        position: relative !important;
+        top: 0 !important;
+        margin-top: 0 !important;
+        background: #fff !important;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.08);
+    }
+
+    #ftco-navbar .nav-item.active .nav-link {
+        color: var(--reservue-brown) !important;
+        opacity: 1 !important;
+        box-shadow: inset 0 -3px 0 var(--reservue-brown);
+    }
+
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .nav-item.active .nav-link {
+        text-shadow:
+            0 0 14px rgba(255, 255, 255, 1),
+            0 0 6px rgba(255, 255, 255, 0.95),
+            0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    #ftco-navbar.scrolled .nav-item.active .nav-link,
+    #ftco-navbar.landing-page-inner .nav-item.active .nav-link {
+        text-shadow: none;
+    }
+
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .nav-item.active .nav-link:hover,
+    #ftco-navbar:not(.scrolled):not(.landing-page-inner) .nav-item.active .nav-link:focus {
+        color: var(--reservue-brown) !important;
+    }
+
+    .landing-inner-hero-wrap {
+        position: relative;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .landing-inner-hero-wrap h1 {
+        font-family: 'Abril Fatface', cursive;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    }
+
+    .landing-login-section .form-control:focus {
+        border-color: rgba(127, 82, 33, 0.55);
+        box-shadow: 0 0 0 0.2rem rgba(127, 82, 33, 0.15);
+    }
+
+    .reservue-login-modal .form-control:focus {
+        border-color: rgba(127, 82, 33, 0.55);
+        box-shadow: 0 0 0 0.2rem rgba(127, 82, 33, 0.15);
+    }
+
+    .reservue-login-modal .modal-content {
+        border: 1px solid rgba(127, 82, 33, 0.12);
+    }
+
+    .destination .text h3 a,
+    .destination .bottom-area a,
+    .blog-entry .text .heading a,
+    .blog-entry .meta > div a {
+        color: var(--reservue-brown) !important;
+        text-decoration: none !important;
+    }
+
+    .destination .text h3 a:hover,
+    .destination .bottom-area a:hover,
+    .blog-entry .text .heading a:hover,
+    .blog-entry .meta > div a:hover {
+        color: #5A3A16 !important;
+        text-decoration: none !important;
+    }
+
+    .ftco-about .heading-section h2 {
+        color: var(--reservue-brown) !important;
+    }
+
+    .ftco-about p {
+        color: rgba(0, 0, 0, 0.65) !important;
+    }
+
+    .btn.btn-primary,
+    .btn-primary {
+        background-color: var(--reservue-brown) !important;
+        border-color: var(--reservue-brown) !important;
+    }
+
+    .btn.btn-primary:hover,
+    .btn-primary:hover {
+        filter: brightness(0.96);
+    }
+
+    .bg-light {
+        background-color: var(--reservue-light-grey) !important;
+    }
+
+    .testimony-section {
+        background: var(--reservue-light-grey) !important;
+    }
+
+    .testimony-section .heading-section-white h2,
+    .testimony-section .heading-section-white p {
+        color: var(--reservue-brown) !important;
+    }
+
+    .testimony-wrap {
+        background: rgba(255, 255, 255, 0.75) !important;
+        color: rgba(0, 0, 0, 0.75) !important;
+    }
+
+    .testimony-wrap .user-img {
+        border: 6px solid var(--reservue-brown) !important;
+    }
+
+    /* Carousel prev/next + dots: theme defaults assume teal bg + hover-only nav; ReserVue uses light grey */
+    .testimony-section .owl-nav .owl-prev,
+    .testimony-section .owl-nav .owl-next {
+        opacity: 1 !important;
+    }
+    .testimony-section .owl-nav .owl-prev span:before,
+    .testimony-section .owl-nav .owl-next span:before {
+        color: var(--reservue-brown) !important;
+        opacity: 0.9;
+    }
+    .testimony-section .owl-nav .owl-prev:hover span:before,
+    .testimony-section .owl-nav .owl-next:hover span:before,
+    .testimony-section .owl-nav .owl-prev:focus span:before,
+    .testimony-section .owl-nav .owl-next:focus span:before {
+        color: var(--reservue-brown) !important;
+        opacity: 1;
+    }
+    .testimony-section .owl-dots .owl-dot {
+        background: rgba(127, 82, 33, 0.28) !important;
+    }
+    .testimony-section .owl-dots .owl-dot.active {
+        background: var(--reservue-brown) !important;
+    }
+    .testimony-wrap .name {
+        color: var(--reservue-brown) !important;
+    }
+    .testimony-wrap .position {
+        color: rgba(42, 29, 15, 0.62) !important;
+    }
+
+    #section-counter:after {
+        opacity: 0 !important;
+        background: none !important;
+    }
+
+    .ftco-section-parallax .parallax-img {
+        background: var(--reservue-light-grey) !important;
+    }
+
+    .ftco-section-parallax .heading-section-white h2,
+    .ftco-section-parallax .heading-section-white p {
+        color: var(--reservue-brown) !important;
+    }
+
+    .ftco-section-parallax .subscribe-form .form-control {
+        background: #ffffff !important;
+        border-color: rgba(127, 82, 33, 0.35) !important;
+    }
+
+    .ftco-section-parallax .subscribe-form .submit {
+        background: var(--reservue-brown) !important;
+        border-color: var(--reservue-brown) !important;
+        color: #fff !important;
+    }
+
+    .destination .text .bottom-area span:last-child a {
+        background: var(--reservue-brown) !important;
+        color: #fff !important;
+    }
+
+    .destination .text .bottom-area span:last-child a:hover {
+        background: var(--reservue-brown) !important;
+        color: #fff !important;
+    }
+
+    /* Keep "Book Now" on one row when the location wraps (e.g. Quezon City, Metro Manila) */
+    .destination .text .bottom-area.d-flex {
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 12px !important;
+        flex-wrap: nowrap !important;
+    }
+    .destination .text .bottom-area.d-flex > span:first-child {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+    .destination .text .bottom-area.d-flex > span:last-child {
+        flex: 0 0 auto !important;
+        margin-left: 0 !important;
+    }
+    .destination .text .bottom-area span:last-child a {
+        white-space: nowrap !important;
+        display: inline-block !important;
+        padding: 6px 14px !important;
+        line-height: 1.25 !important;
+    }
+
+    .blog-entry .text .tag {
+        background: var(--reservue-brown) !important;
+        color: #fff !important;
+    }
+
+    .ftco-footer.ftco-bg-dark,
+    .ftco-bg-dark {
+        background-color: var(--reservue-brown) !important;
+    }
+
+    .ftco-footer a,
+    .ftco-footer a:hover,
+    .ftco-footer a:focus {
+        color: rgba(255, 255, 255, 0.85) !important;
+        text-decoration: none !important;
+    }
+
+    .footer-logo {
+        height: 40px;
+        width: auto;
+        display: block;
+    }
+
+    .reservue-3d-section {
+        background: var(--reservue-light-grey);
+        padding: 4.5rem 0 3.5rem;
+        overflow: hidden;
+    }
+
+    .reservue-3d-grid {
+        row-gap: 1.75rem;
+    }
+
+    .reservue-3d-section .reservue-3d-grid > [class*="col-"] {
+        overflow: hidden;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .reservue-3d-card {
+        position: relative;
+        display: block;
+        height: 320px;
+        border-radius: 18px;
+        overflow: hidden;
+        background: #2a1d0f;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        transition: transform 220ms ease, box-shadow 220ms ease;
+        isolation: isolate;
+    }
+
+    .reservue-3d-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.15) 45%,
+            rgba(42, 29, 15, 0.82) 78%,
+            rgba(42, 29, 15, 0.95) 100%
+        );
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .reservue-3d-img {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center center;
+        transform: scale(1.05);
+        z-index: 1;
+        transition: transform 220ms ease;
+    }
+
+    .reservue-3d-card__body {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3;
+        padding: 18px 18px 16px;
+        max-width: 100%;
+    }
+
+    .reservue-3d-card__tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        color: #fff;
+        background: rgba(127, 82, 33, 0.92);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .reservue-3d-card__title {
+        color: #fff;
+        margin: 0 0 6px 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+
+    .reservue-3d-card__meta {
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 0.95rem;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .reservue-3d-card:hover {
+            transform: perspective(1000px) rotateY(-10deg) rotateX(5deg) translateY(-4px);
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.15);
+        }
+
+        .reservue-3d-card:hover .reservue-3d-img {
+            transform: scale(1.08);
+            transition: transform 220ms ease;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reservue-3d-card,
+        .reservue-3d-img {
+            transition: none !important;
+        }
+
+        .reservue-3d-card:hover {
+            transform: none;
+        }
+    }
+
+    /* Auth modals — split pane (travel brand + form) */
+    .reservue-auth-modal .modal-dialog {
+        max-width: 920px;
+        width: calc(100% - 1.5rem);
+    }
+
+    .reservue-auth-modal .modal-content {
+        overflow: visible;
+    }
+
+    .reservue-auth-shell {
+        display: flex;
+        flex-wrap: wrap;
+        min-height: 460px;
+        border-radius: 20px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .reservue-auth-brand {
+        flex: 1 1 42%;
+        min-width: 260px;
+        min-height: 220px;
+        background-size: cover;
+        background-position: center center;
+        position: relative;
+    }
+
+    .reservue-auth-brand::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(127, 82, 33, 0.88), rgba(55, 38, 18, 0.9));
+        border-radius: 0;
+    }
+
+    .reservue-auth-brand-inner {
+        position: relative;
+        z-index: 1;
+        padding: 2.75rem 2.25rem;
+        color: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .reservue-auth-kicker {
+        font-size: 0.7rem;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        opacity: 0.95;
+        margin: 0;
+    }
+
+    .reservue-auth-headline {
+        font-family: 'Abril Fatface', cursive;
+        font-size: clamp(1.75rem, 4vw, 2.35rem);
+        line-height: 1.1;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+    }
+
+    .reservue-auth-sub {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        line-height: 1.55;
+        font-weight: 300;
+        opacity: 0.95;
+        max-width: 18rem;
+    }
+
+    .reservue-auth-form-col {
+        flex: 1 1 58%;
+        min-width: 280px;
+        background: #fff;
+        padding: 2.5rem 2.25rem 2.25rem;
+        position: relative;
+    }
+
+    .reservue-auth-close {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        z-index: 2;
+        font-size: 1.75rem;
+        opacity: 0.45;
+        text-shadow: none;
+    }
+
+    .reservue-auth-close:hover {
+        opacity: 0.85;
+    }
+
+    .reservue-auth-title {
+        font-family: 'Abril Fatface', cursive;
+        color: var(--reservue-brown);
+        font-size: 1.65rem;
+        font-weight: 400;
+    }
+
+    .reservue-auth-label,
+    label.reservue-auth-label {
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #888;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 0.4rem;
+    }
+
+    .reservue-auth-input,
+    .reservue-auth-form .form-control {
+        border: 2px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 0.65rem 0.9rem;
+        font-size: 0.95rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .reservue-auth-input:focus,
+    .reservue-auth-form .form-control:focus {
+        border-color: rgba(127, 82, 33, 0.45);
+        box-shadow: 0 0 0 3px rgba(127, 82, 33, 0.12);
+    }
+
+    .reservue-auth-check-label {
+        font-size: 0.65rem !important;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #666 !important;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        margin-left: 0.35rem;
+    }
+
+    .btn-reservue-brown {
+        background: var(--reservue-brown) !important;
+        border: none !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        letter-spacing: 0.08em;
+        padding: 0.75rem 1rem !important;
+    }
+
+    .btn-reservue-brown:hover {
+        filter: brightness(0.95);
+        color: #fff !important;
+    }
+
+    .btn-reservue-blue {
+        background: #2196f3 !important;
+        border: none !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        letter-spacing: 0.1em;
+        padding: 0.75rem 1rem !important;
+        box-shadow: 0 4px 14px rgba(33, 150, 243, 0.35);
+    }
+
+    .btn-reservue-blue:hover {
+        background: #1976d2 !important;
+        color: #fff !important;
+    }
+
+    @media (max-width: 767.98px) {
+        .reservue-auth-shell {
+            flex-direction: column;
+        }
+
+        .reservue-auth-brand {
+            min-height: 200px;
+        }
+    }
+
+    .reservue-flash-stack {
+        position: fixed;
+        top: 5.5rem;
+        left: 0;
+        right: 0;
+        z-index: 2000;
+        pointer-events: none;
+        padding: 0 1rem;
+    }
+
+    .reservue-flash-stack .alert {
+        pointer-events: auto;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* ——— Meet the Team ——— */
+    .reservue-team-section {
+        padding-top: 4rem;
+        padding-bottom: 4.5rem;
+    }
+
+    .reservue-team-kicker {
+        display: inline-block;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--reservue-brown);
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 0.5rem;
+    }
+
+    .reservue-team-heading {
+        font-family: 'Abril Fatface', Georgia, serif;
+        color: #2a1d0f;
+        font-size: clamp(1.75rem, 4vw, 2.35rem);
+    }
+
+    .reservue-team-lead {
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 1rem;
+        line-height: 1.6;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .reservue-team-row {
+        --reservue-team-gap: 1.5rem;
+    }
+
+    .reservue-team-card {
+        display: flex;
+        flex-direction: column;
+        background: #faf8f5;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(127, 82, 33, 0.12);
+        box-shadow: 0 12px 40px rgba(42, 29, 15, 0.06);
+        transition: box-shadow 0.25s ease, transform 0.25s ease;
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .reservue-team-card:hover {
+        box-shadow: 0 18px 48px rgba(42, 29, 15, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .reservue-team-photo-wrap {
+        position: relative;
+        aspect-ratio: 4 / 5;
+        background: linear-gradient(160deg, #e8dfd4 0%, #f5f0ea 100%);
+    }
+
+    .reservue-team-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+    }
+
+    /* Team photos: perfectly uniform crop/height */
+    @media (min-width: 576px) {
+        .reservue-team-photo-wrap {
+            aspect-ratio: auto;
+            height: 360px;
+        }
+    }
+
+    .reservue-team-photo--placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, rgba(127, 82, 33, 0.12), rgba(127, 82, 33, 0.04));
+    }
+
+    .reservue-team-photo--placeholder .icon {
+        font-size: 3.5rem;
+        color: var(--reservue-brown);
+        opacity: 0.35;
+    }
+
+    .reservue-team-body {
+        padding: 1.35rem 1.25rem 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .reservue-team-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2a1d0f;
+        margin-bottom: 0.35rem;
+        line-height: 1.3;
+    }
+
+    .reservue-team-role {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--reservue-brown);
+        margin: 0;
+        line-height: 1.45;
+    }
+
+    @media (max-width: 575.98px) {
+        .reservue-team-section {
+            padding-top: 3rem;
+            padding-bottom: 3.5rem;
+        }
+
+        .reservue-team-card {
+            max-width: 100%;
+        }
+    }
+
+    /* ——— Landing page polish (professional + elegant) ——— */
+    body {
+        font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color: #2a1d0f;
+        background: #ffffff;
+    }
+
+    .ftco-section {
+        padding: 5rem 0;
+    }
+
+    @media (max-width: 767.98px) {
+        .ftco-section {
+            padding: 3.75rem 0;
+        }
+    }
+
+    /* Mobile readability: landing + about + contact */
+    @media (max-width: 575.98px) {
+        .reservue-logo-navbar {
+            height: 56px;
+            max-height: 60px;
+        }
+        #ftco-navbar .nav-link {
+            font-size: 0.95rem;
+            padding: 0.65rem 0.9rem;
+        }
+        .hero-wrap h1 {
+            font-size: clamp(2rem, 8vw, 2.6rem);
+        }
+        .heading-section h2 {
+            font-size: clamp(1.55rem, 6vw, 2rem);
+            line-height: 1.12;
+        }
+        .bg-white.p-5 {
+            padding: 1.25rem !important;
+        }
+        .bg-white.p-4.p-md-5 {
+            padding: 1.25rem !important;
+        }
+        .ftco-animate {
+            transform: none !important;
+        }
+    }
+
+    /* Hero */
+    .hero-wrap .overlay {
+        background: radial-gradient(1200px 520px at 18% 28%, rgba(127, 82, 33, 0.35), rgba(0, 0, 0, 0) 62%),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.15));
+        opacity: 1 !important;
+    }
+
+    .hero-wrap h1 {
+        font-family: 'Abril Fatface', cursive;
+        letter-spacing: 0.02em;
+        line-height: 1.05;
+        text-transform: uppercase;
+    }
+
+    .hero-wrap p {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        max-width: 34rem;
+        color: rgba(255, 255, 255, 0.92) !important;
+    }
+
+    /* Search card (replaces Flight/Hotel tabs) */
+    .ftco-search {
+        margin-top: -110px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .reservue-hero-search {
+        padding: 0 0 0.75rem;
+    }
+
+    .reservue-hero-search__card {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(127, 82, 33, 0.14);
+        border-radius: 18px;
+        box-shadow: 0 22px 70px rgba(42, 29, 15, 0.18);
+        overflow: hidden;
+        padding: 1.4rem 1.6rem 1.1rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .reservue-hero-search__head {
+        margin-bottom: 1.1rem;
+        text-align: center;
+    }
+
+    .reservue-hero-search__kicker {
+        margin: 0 0 0.35rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(42, 29, 15, 0.72);
+        font-weight: 600;
+    }
+
+    .reservue-hero-search__title {
+        margin: 0 0 0.4rem;
+        font-family: 'Abril Fatface', cursive;
+        font-size: clamp(1.45rem, 2.6vw, 2rem);
+        color: var(--reservue-brown);
+        font-weight: 400;
+        letter-spacing: 0.02em;
+    }
+
+    .reservue-hero-search__sub {
+        margin: 0 auto;
+        max-width: 52rem;
+        color: rgba(42, 29, 15, 0.64);
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    .reservue-hero-search .search-destination .form-group label {
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(42, 29, 15, 0.62);
+        font-weight: 700;
+    }
+
+    .reservue-hero-search .search-destination .form-field .form-control {
+        border-radius: 12px;
+        border: 1px solid rgba(127, 82, 33, 0.18);
+        background: #fff;
+        box-shadow: none;
+        height: 56px;
+    }
+
+    .reservue-hero-search .search-destination .form-field .form-control:focus {
+        border-color: rgba(127, 82, 33, 0.45);
+        box-shadow: 0 0 0 0.22rem rgba(127, 82, 33, 0.12);
+    }
+
+    .reservue-hero-search .btn.btn-primary {
+        border-radius: 12px !important;
+        height: 56px !important;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .reservue-hero-search__quick {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.65rem;
+        padding-top: 0.4rem;
+    }
+
+    .reservue-hero-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(127, 82, 33, 0.22);
+        background: rgba(127, 82, 33, 0.07);
+        color: rgba(42, 29, 15, 0.86) !important;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none !important;
+    }
+
+    .reservue-hero-pill:hover,
+    .reservue-hero-pill:focus {
+        background: rgba(127, 82, 33, 0.12);
+        color: rgba(42, 29, 15, 1) !important;
+        text-decoration: none !important;
+    }
+
+    @media (max-width: 767.98px) {
+        .ftco-search {
+            margin-top: -70px;
+        }
+
+        .reservue-hero-search__card {
+            padding: 1.15rem 1.1rem 1rem;
+        }
+    }
+
+    /* Section headings */
+    .heading-section h2,
+    .heading-section-white h2 {
+        font-family: 'Abril Fatface', cursive;
+        letter-spacing: 0.02em;
+    }
+
+    .heading-section p {
+        color: rgba(42, 29, 15, 0.62) !important;
+        line-height: 1.7;
+    }
+
+    /* Cards: softer, more premium */
+    .destination,
+    .blog-entry {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 16px 46px rgba(42, 29, 15, 0.09);
+        border: 1px solid rgba(127, 82, 33, 0.10);
+        background: #fff;
+    }
+
+    .destination:hover,
+    .blog-entry:hover {
+        box-shadow: 0 22px 62px rgba(42, 29, 15, 0.14);
+    }
+
+    .destination .text,
+    .blog-entry .text {
+        background: #fff !important;
+    }
+</style>

@@ -1,0 +1,254 @@
+{% extends 'dashboard/base.html.twig' %}
+{% import '_macros/rv_dashboard_icons.html.twig' as dui %}
+
+{% block title %}My Reservations{% endblock %}
+
+{% block dashboard_styles %}
+<style>
+    .customer-trips-header h1 {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-weight: 700;
+        color: var(--rv-brown-dark, #4a3f35);
+        letter-spacing: -0.02em;
+    }
+    .customer-trips-grid {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+        gap: 1.5rem;
+        margin-top: 0;
+        align-items: stretch;
+        justify-items: stretch;
+    }
+    .customer-trip-card {
+        background: var(--rv-surface, #fff);
+        border-radius: var(--rv-radius-md, 12px);
+        box-shadow: var(--rv-shadow-card);
+        border: 1px solid var(--rv-border);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        min-height: 100%;
+    }
+    /* Fixed-height media: avoids intrinsic image dimensions fighting aspect-ratio; same crop every card */
+    .customer-trip-card__media {
+        flex: 0 0 auto;
+        width: 100%;
+        height: clamp(168px, 26vw, 220px);
+        background: linear-gradient(145deg, var(--rv-page-muted), var(--rv-border-strong));
+        position: relative;
+        overflow: hidden;
+    }
+    .customer-trip-card__media img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+    }
+    .customer-trip-card__body {
+        padding: 1.1rem 1.15rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        flex: 1;
+    }
+    .customer-trip-card__pkg {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--rv-text);
+        line-height: 1.3;
+    }
+    .customer-trip-card__kind {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--rv-brown-mid, #8b6f47);
+    }
+    .customer-trip-card__sub {
+        font-size: 0.86rem;
+        color: var(--rv-text-muted);
+        line-height: 1.35;
+        /* Reserve ~2 lines so cards with/without duration or add-on line up */
+        min-height: calc(1.35em * 2);
+    }
+    .customer-trip-card__price {
+        font-size: 0.88rem;
+        color: var(--rv-text);
+    }
+    .customer-trip-card__ref {
+        font-size: 0.82rem;
+        color: var(--rv-text-muted);
+        font-family: ui-monospace, monospace;
+    }
+    .customer-trip-card__meta {
+        font-size: 0.88rem;
+        color: var(--rv-text-muted);
+    }
+    .rv-cust-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        width: fit-content;
+    }
+    .rv-cust-badge--processing { background: #fff3e0; color: #8d5e2a; }
+    .rv-cust-badge--completed { background: #dcedc8; color: #33691e; }
+    .rv-cust-badge--cancelled { background: #fce4ec; color: #c2185b; }
+    .customer-trip-card__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 0.5rem;
+        /* Room for “View details” + receipt (wraps on narrow cards) so rows align across the grid */
+        min-height: 5.25rem;
+        align-content: flex-end;
+    }
+    .customer-trip-card__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.55rem 1rem;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s ease, transform 0.12s ease;
+    }
+    .customer-trip-card__btn:hover { opacity: 0.92; }
+    .customer-trip-card__btn--primary {
+        background: var(--rv-brown-mid, #8b6f47);
+        color: #fff;
+    }
+    .customer-trip-card__btn--ghost {
+        background: var(--rv-surface-2);
+        color: var(--rv-brown-dark);
+        border: 1px solid var(--rv-border-strong);
+    }
+    .customer-trip-card__pdf-ico { display: inline-flex; vertical-align: middle; }
+    .customer-trip-empty {
+        text-align: center;
+        padding: 2.5rem 1.5rem 3rem;
+        max-width: 420px;
+        margin: 2rem auto 0;
+    }
+    .customer-trip-empty__art {
+        width: 160px;
+        height: auto;
+        margin: 0 auto 1.25rem;
+        opacity: 0.88;
+    }
+    .customer-trip-empty__title {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 1.35rem;
+        color: var(--rv-brown-dark);
+        margin-bottom: 0.5rem;
+    }
+    .customer-trip-empty__btn {
+        display: inline-flex;
+        margin-top: 1.25rem;
+        padding: 0.65rem 1.35rem;
+        border-radius: 10px;
+        background: var(--rv-brown-mid, #8b6f47);
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .customer-trip-empty__btn:hover { opacity: 0.93; color: #fff; }
+    .customer-trips-header__btn-ico {
+        display: inline-flex;
+        vertical-align: middle;
+        margin-right: 0.35rem;
+        margin-bottom: 2px;
+    }
+    .customer-trips-header .btn-new {
+        display: inline-flex;
+        align-items: center;
+    }
+    /* Don’t stretch the white card to half the viewport when there are few trips */
+    .product-container.customer-trips-page {
+        min-height: 0;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_body %}
+<meta name="turbo-page-title" content="My Reservations">
+<div class="product-container customer-trips-page">
+    <div class="product-header customer-trips-header">
+        <h1>My Reservations</h1>
+        <div class="header-buttons">
+            <a href="{{ path('app_customer_booking_index') }}" class="btn-new" data-turbo="false">{{ dui.icon('luggage', 'customer-trips-header__btn-ico') }} Book a trip</a>
+        </div>
+    </div>
+
+    {% if bookings is empty %}
+        <div class="table-wrapper">
+        <div class="customer-trip-empty">
+            <svg class="customer-trip-empty__art" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="24" y="40" width="152" height="96" rx="12" fill="#faf7f4" stroke="#d7cbb8" stroke-width="2"/>
+                <path d="M48 64h104M48 88h72M48 112h88" stroke="#c4b5a3" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="100" cy="36" r="22" fill="#ebe6e0" stroke="#8b6f47" stroke-width="2"/>
+                <path d="M88 36c0-6 5-11 12-11s12 5 12 11-5 11-12 11" stroke="#6b5438" stroke-width="2" stroke-linecap="round"/>
+                <path d="M92 44h16" stroke="#6b5438" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p class="customer-trip-empty__title">No trips found</p>
+            <p style="color:var(--rv-text-muted);font-size:0.95rem;line-height:1.5;">You have no reservations yet. Book a travel package or a catalog add-on from the book page — everything will show up here.</p>
+            <a href="{{ path('app_customer_booking_index') }}" class="customer-trip-empty__btn" data-turbo="false">Book Your Next Adventure</a>
+        </div>
+        </div>
+    {% else %}
+        <div class="table-wrapper">
+        <div class="customer-trips-grid">
+            {% for booking in bookings %}
+                {% set st = booking.status.value %}
+                {% set cust_label = st == 'pending' ? 'Processing' : (st == 'completed' ? 'Completed' : 'Cancelled') %}
+                {% set cust_class = st == 'pending' ? 'rv-cust-badge--processing' : (st == 'completed' ? 'rv-cust-badge--completed' : 'rv-cust-badge--cancelled') %}
+                {% set rawImg = booking.summaryImagePath ?? '' %}
+                {% set img = rawImg ? asset(rawImg) : asset('advanture-2/images/destination-1.jpg') %}
+                <article class="customer-trip-card">
+                    <div class="customer-trip-card__media">
+                        <img src="{{ img }}" alt="{{ booking.displayTitle }}" loading="lazy" width="640" height="360">
+                    </div>
+                    <div class="customer-trip-card__body">
+                        <div class="customer-trip-card__kind">{{ booking.reservationKindLabel }}</div>
+                        <div class="customer-trip-card__pkg">{{ booking.displayTitle }}</div>
+                        <div class="customer-trip-card__sub">{% if booking.customerSummaryDetailLine %}{{ booking.customerSummaryDetailLine }}{% endif %}</div>
+                        <div class="customer-trip-card__ref" title="Reference code">{{ booking.referenceCode }}</div>
+                        {% if booking.priceDescriptionLine %}
+                            <div class="customer-trip-card__price">{{ booking.priceDescriptionLine }}</div>
+                        {% endif %}
+                        <div class="customer-trip-card__meta">
+                            Travel date: <strong>{{ booking.travelDate ? booking.travelDate|date('M j, Y') : '—' }}</strong>
+                            · Travelers: <strong>{{ booking.numberOfTravelers }}</strong>
+                        </div>
+                        <div class="customer-trip-card__meta">
+                            Est. total: <strong>₱{{ booking.estimatedTotal|number_format(2, '.', ',') }}</strong>
+                        </div>
+                        <span class="rv-cust-badge {{ cust_class }}">{{ cust_label }}</span>
+                        <div class="customer-trip-card__actions">
+                            <a href="{{ path('app_customer_my_trip_show', { id: booking.id }) }}" class="customer-trip-card__btn customer-trip-card__btn--primary" data-turbo-frame="reservue-dashboard-outlet" data-turbo-preload>View Details</a>
+                            {% if st == 'completed' %}
+                                <a href="{{ path('app_customer_my_trip_receipt', { id: booking.id }) }}" class="customer-trip-card__btn customer-trip-card__btn--ghost" data-turbo="false">{{ dui.icon('file-pdf', 'customer-trip-card__pdf-ico') }} Download Receipt</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

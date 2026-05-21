@@ -1,0 +1,98 @@
+{# Self-contained cards (no theme style.css) — links scroll to bookable packages. #}
+{% set cb_places = [
+    { img: 1, title: 'Palawan Island Escape', price: '₱18,500', description: 'Limestone cliffs, hidden lagoons, and crystal-clear waters—perfect for island-hopping and quiet beach days.', location: 'El Nido, Palawan' },
+    { img: 2, title: 'Chocolate Hills & Tarsiers', price: '₱12,900', description: 'See Bohol’s iconic mounds, meet tiny tarsiers, and cruise the Loboc River with a local lunch stop.', location: 'Bohol' },
+    { img: 3, title: 'Banaue Rice Terraces', price: '₱15,400', description: 'Walk ancient Ifugao terraces carved into the mountains, with homestays and sunrise viewpoints.', location: 'Ifugao' },
+    { img: 1, title: 'Siargao Surf & Islands', price: '₱22,000', description: 'Cloud 9 waves, palm-lined roads, and day trips to Sohoton Cove and naked island sandbars.', location: 'Siargao' },
+    { img: 2, title: 'Intramuros Heritage Walk', price: '₱8,900', description: 'Cobblestone streets, Spanish-era forts, museums, and sunset views over Manila Bay.', location: 'Manila' },
+] %}
+{% set cb_hotels = [
+    { img: 1, title: 'Makati Skyline Suites', price: '₱4,500', description: 'High-floor rooms, rooftop pool, and quick access to Ayala Triangle and business districts.', location: 'Makati City, Metro Manila' },
+    { img: 2, title: 'Boracay White Beach Resort', price: '₱8,200', description: 'Steps from powder-white sand, with beachfront dining and sunset sailing options.', location: 'Malay, Aklan' },
+    { img: 3, title: 'Cebu Harborfront Hotel', price: '₱3,200', description: 'Harbor views, modern rooms, and a great base for city tours and island hopping to Mactan.', location: 'Cebu City' },
+    { img: 4, title: 'Baguio Pine Lodge', price: '₱2,800', description: 'Cool mountain air, fireplace lounges, and short drives to Mines View and strawberry farms.', location: 'Baguio City' },
+    { img: 5, title: 'Davao Gulf Eco Retreat', price: '₱5,100', description: 'Quiet gardens, farm-to-table breakfast, and easy trips to Samal Island beaches.', location: 'Davao City' },
+] %}
+{% set cb_restaurants = [
+    { img: 1, title: 'Antonio’s Garden', price: 'from ₱2,800', description: 'Seasonal tasting menus and farm views in the cool ridge air of Tagaytay—ideal for celebrations.', location: 'Tagaytay, Cavite' },
+    { img: 2, title: 'Harbor Grill Cebu', price: 'from ₱650', description: 'Fresh seafood platters and grilled specialties with a relaxed port-city atmosphere.', location: 'Cebu City' },
+    { img: 3, title: 'La Mesa Ilocano Kitchen', price: 'from ₱480', description: 'Authentic pinakbet, bagnet, and longganisa platters served family-style with house vinegar.', location: 'Quezon City, Metro Manila' },
+    { img: 4, title: 'Café by the Ruins Dua', price: 'from ₱380', description: 'Baguio classics—champorado, Sagada coffee, and herb breads—in a garden setting.', location: 'Baguio City' },
+] %}
+<div id="cb-discovery-wrap" class="cb-discovery-wrap">
+    <section class="cb-discovery-section" id="cb-places" aria-labelledby="cb-places-heading">
+        <div class="cb-discovery-inner">
+            <header class="cb-section-head">
+                <h2 id="cb-places-heading">Most Popular Destination</h2>
+                <p class="cb-section-lead">Explore highlights — then choose a package above to set your dates and book.</p>
+            </header>
+            <div class="cb-dest-grid cb-dest-grid--5">
+                {% for p in cb_places %}
+                    <article class="cb-dest-card">
+                        <a href="#rv-packages" class="cb-dest-card__media" style="background-image: url('{{ asset('advanture-2/images/destination-' ~ p.img ~ '.jpg') }}');" aria-hidden="true" tabindex="-1"></a>
+                        <div class="cb-dest-card__body">
+                            <div class="cb-dest-card__row">
+                                <h3 class="cb-dest-card__title"><a href="#rv-packages">{{ p.title }}</a></h3>
+                                <span class="cb-dest-card__price">{{ p.price }}</span>
+                            </div>
+                            <p class="cb-dest-card__stars" aria-hidden="true">★★★★☆ <span>8 Rating</span></p>
+                            <p class="cb-dest-card__desc">{{ p.description }}</p>
+                            <p class="cb-dest-card__meta"><span class="cb-dest-card__loc">{{ p.location }}</span></p>
+                            <a href="#rv-packages" class="cb-dest-card__cta">Discover</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="cb-discovery-section" id="cb-hotels" aria-labelledby="cb-hotels-heading">
+        <div class="cb-discovery-inner">
+            <header class="cb-section-head">
+                <h2 id="cb-hotels-heading">Popular Hotels</h2>
+            </header>
+            <div class="cb-dest-grid cb-dest-grid--5">
+                {% for h in cb_hotels %}
+                    <article class="cb-dest-card">
+                        <a href="#rv-packages" class="cb-dest-card__media" style="background-image: url('{{ asset('advanture-2/images/hotel-' ~ h.img ~ '.jpg') }}');" aria-hidden="true" tabindex="-1"></a>
+                        <div class="cb-dest-card__body">
+                            <div class="cb-dest-card__row">
+                                <h3 class="cb-dest-card__title"><a href="#rv-packages">{{ h.title }}</a></h3>
+                                <span class="cb-dest-card__price cb-dest-card__price--small">{{ h.price }} <small>/ night</small></span>
+                            </div>
+                            <p class="cb-dest-card__stars" aria-hidden="true">★★★★★ <span>8 Rating</span></p>
+                            <p class="cb-dest-card__desc">{{ h.description }}</p>
+                            <p class="cb-dest-card__meta"><span class="cb-dest-card__loc">{{ h.location }}</span></p>
+                            <a href="#rv-packages" class="cb-dest-card__cta">Book now</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="cb-discovery-section" id="cb-restaurants" aria-labelledby="cb-restaurants-heading">
+        <div class="cb-discovery-inner">
+            <header class="cb-section-head">
+                <h2 id="cb-restaurants-heading">Recommended Restaurants</h2>
+            </header>
+            <div class="cb-dest-grid cb-dest-grid--4">
+                {% for rest in cb_restaurants %}
+                    <article class="cb-dest-card">
+                        <a href="#rv-packages" class="cb-dest-card__media" style="background-image: url('{{ asset('advanture-2/images/restaurant-' ~ rest.img ~ '.jpg') }}');" aria-hidden="true" tabindex="-1"></a>
+                        <div class="cb-dest-card__body">
+                            <div class="cb-dest-card__row">
+                                <h3 class="cb-dest-card__title"><a href="#rv-packages">{{ rest.title }}</a></h3>
+                                <span class="cb-dest-card__price cb-dest-card__price--small">{{ rest.price }} <small>/ person</small></span>
+                            </div>
+                            <p class="cb-dest-card__stars" aria-hidden="true">★★★★☆ <span>8 Rating</span></p>
+                            <p class="cb-dest-card__desc">{{ rest.description }}</p>
+                            <p class="cb-dest-card__meta"><span class="cb-dest-card__loc">{{ rest.location }}</span></p>
+                            <a href="#rv-packages" class="cb-dest-card__cta">Book now</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>

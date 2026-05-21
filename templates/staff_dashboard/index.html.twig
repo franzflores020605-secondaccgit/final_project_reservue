@@ -1,0 +1,109 @@
+{% extends 'dashboard/base.html.twig' %}
+{% import '_macros/rv_dashboard_icons.html.twig' as dui %}
+
+{% block title %}Staff Dashboard{% endblock %}
+
+{% block dashboard_styles %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block dashboard_body %}
+        <meta name="turbo-page-title" content="Staff Dashboard">
+        <div class="product-container dashboard-home">
+
+        <div class="dashboard-stats-intro">
+            <h2>Your workspace</h2>
+            <p>Counts for your areas—open any screen from the sidebar.</p>
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card stat-card--metric-products">
+                <span class="stat-card__icon">{{ dui.icon('package', 'rv-icon') }}</span>
+                <div class="stat-label">My products</div>
+                <div class="stat-value">{{ stats.products }}</div>
+            </div>
+            <div class="stat-card stat-card--metric-users">
+                <span class="stat-card__icon">{{ dui.icon('user', 'rv-icon') }}</span>
+                <div class="stat-label">My travelers</div>
+                <div class="stat-value">{{ stats.travelers }}</div>
+            </div>
+            {% if stats.bookings is not null %}
+            <div class="stat-card stat-card--metric-all-bookings">
+                <span class="stat-card__icon">{{ dui.icon('ticket', 'rv-icon') }}</span>
+                <div class="stat-label">Bookings</div>
+                <div class="stat-value">{{ stats.bookings }}</div>
+            </div>
+            {% endif %}
+            {% if stats.travel_packages is not null %}
+            <a href="{{ path('app_travel_package_index') }}" class="stat-card stat-card--accent stat-card--metric-packages" data-turbo-frame="reservue-dashboard-outlet" data-turbo-preload>
+                <span class="stat-card__icon">{{ dui.icon('luggage', 'rv-icon') }}</span>
+                <div class="stat-label">Travel packages</div>
+                <div class="stat-value">{{ stats.travel_packages }}</div>
+                <span class="stat-card__hint">Open travel packages →</span>
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="table-container" style="margin-bottom:20px;">
+            <div class="dashboard-section-head">
+                <div>
+                    <h3>Recent audit activity</h3>
+                    <p class="lead">Actions tied to your account and related records.</p>
+                </div>
+            </div>
+            {% if recentActivities is not empty %}
+                <div class="logs-table-wrap" style="padding:0;">
+                    <table id="staff-audit-logs-table" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Action performed</th>
+                                <th>Affected data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in recentActivities %}
+                                <tr>
+                                    <td>{{ row.createdAt }}</td>
+                                    <td>{{ row.username }}</td>
+                                    <td>{{ row.roleLabel }}</td>
+                                    <td>{{ row.action }}</td>
+                                    <td class="details-cell" style="max-width:360px;white-space:normal;word-break:break-word;">{{ row.affectedData }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p style="margin:0;color:#6b5d52;font-size:0.95rem;">No recent audit entries yet.</p>
+            {% endif %}
+        </div>
+        </div>
+{% endblock %}
+
+{% block dashboard_scripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(function () {
+            if (!$('#staff-audit-logs-table').length) {
+                return;
+            }
+            $('#staff-audit-logs-table').DataTable({
+                pageLength: 5,
+                lengthChange: false,
+                ordering: true,
+                order: [[0, 'desc']],
+                searching: true,
+                info: true,
+                autoWidth: false,
+                columnDefs: [
+                    { targets: [4], orderable: false }
+                ]
+            });
+        });
+    </script>
+{% endblock %}

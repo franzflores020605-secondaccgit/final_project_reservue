@@ -8,7 +8,7 @@ parameters:
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true      # Automatically injects dependencies in this file's services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
     # makes classes in src/ available to be used as services
@@ -19,6 +19,25 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Service\DocumentImageStorage:
+        arguments:
+            $documentsDirectory: '%kernel.project_dir%/public/uploads/documents'
+
+    App\Service\BrevoContactFormService:
+        bind:
+            $apiKey: '%env(BREVO_API_KEY)%'
+            $senderEmail: '%env(BREVO_SENDER_EMAIL)%'
+            $senderName: '%env(BREVO_SENDER_NAME)%'
+            $notifyEmail: '%env(BREVO_NOTIFY_EMAIL)%'
+            $contactListIdEnv: '%env(BREVO_CONTACT_LIST_ID)%'
+            $mailerDsn: '%env(MAILER_DSN)%'
+            $kernelDebug: '%kernel.debug%'
+
+    App\Service\EmailVerificationService:
+        bind:
+            $senderEmail: '%env(BREVO_SENDER_EMAIL)%'
+            $senderName: '%env(BREVO_SENDER_NAME)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

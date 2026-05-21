@@ -1,387 +1,17 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Bookings Index{% endblock %}
+{% block title %}Bookings{% endblock %}
 
-{% block body %}
-<style>
-    /* ===== COLOR SCHEME ===== */
-    :root {
-        --primary-brown: #6B5B4D;
-        --dark-brown: #4A3F35;
-        --light-brown: #8B7968;
-        --accent-brown: #9B826F;
-        --light-grey: #F5F5F5;
-        --medium-grey: #E8E8E8;
-        --dark-grey: #7A7A7A;
-        --white: #ffffff;
-        --border-grey: #f0f0f0;
-        --text-dark: #333333;
-        --text-light: #999999;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--light-grey);
-        color: var(--text-dark);
-    }
-
-    /* ===== DASHBOARD CONTAINER ===== */
-    .dashboard-container {
-        display: flex;
-        min-height: 100vh;
-    }
-
-    /* ===== SIDEBAR ===== */
-    .sidebar {
-        width: 260px;
-        background: linear-gradient(180deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
-        color: white;
-        padding: 20px 0;
-        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-        position: fixed;
-        height: 100vh;
-        overflow-y: auto;
-    }
-
-    .sidebar-logo {
-        padding: 20px;
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 30px;
-    }
-
-    .logo-img {
-        width: 120px;
-        height: auto;
-        margin-bottom: 10px;
-    }
-
-    .sidebar-logo p {
-        color: var(--medium-grey);
-        font-size: 14px;
-        font-weight: 300;
-        letter-spacing: 1px;
-    }
-
-    .sidebar-menu {
-        list-style: none;
-        padding: 0 15px;
-    }
-
-    .sidebar-menu li {
-        margin-bottom: 5px;
-    }
-
-    .sidebar-menu a {
-        display: flex;
-        align-items: center;
-        padding: 12px 15px;
-        color: var(--medium-grey);
-        text-decoration: none;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        font-size: 15px;
-    }
-
-    .sidebar-menu a:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        padding-left: 20px;
-    }
-
-    .sidebar-menu a.active {
-        background-color: var(--accent-brown);
-        color: white;
-        font-weight: 500;
-    }
-
-    .sidebar-menu .icon {
-        font-size: 18px;
-        margin-right: 12px;
-        width: 24px;
-        text-align: center;
-    }
-
-    /* ===== MAIN CONTENT ===== */
-    .main-content {
-        flex: 1;
-        margin-left: 260px;
-        padding: 40px;
-        background-color: var(--light-grey);
-    }
-
-    .crud-container {
-        max-width: 100%;
-        margin: 0 auto;
-        background: var(--white);
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    /* Header Section */
-    .crud-header {
-        background: linear-gradient(135deg, #8B6F47 0%, #6B5438 100%);
-        padding: 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-
-    .crud-header h1 {
-        font-size: 2.5rem;
-        font-weight: 600;
-        margin: 0;
-        color: var(--white);
-        letter-spacing: -0.5px;
-    }
-
-    .header-buttons {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-new {
-        padding: 14px 30px;
-        background: var(--white);
-        color: #6B5438;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        display: inline-block;
-        letter-spacing: 0.3px;
-    }
-
-    .btn-new:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
-        background: #f9f9f9;
-    }
-
-    .crud-content {
-        padding: 40px;
-    }
-
-    /* Table Styles */
-    table.table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        margin-top: 20px;
-        font-size: 0.95rem;
-    }
-
-    table.table thead tr {
-        background: linear-gradient(135deg, #8B6F47 0%, #6B5438 100%);
-    }
-
-    table.table th {
-        padding: 20px 15px;
-        text-align: left;
-        font-weight: 600;
-        color: var(--white);
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border: none;
-    }
-
-    table.table thead th:first-child {
-        border-radius: 12px 0 0 0;
-    }
-
-    table.table thead th:last-child {
-        border-radius: 0 12px 0 0;
-    }
-
-    table.table tbody tr {
-        background: #fafafa;
-        transition: all 0.3s ease;
-        border-bottom: 2px solid var(--border-grey);
-    }
-
-    table.table tbody tr:hover {
-        background: #f5f5f5;
-        transform: scale(1.01);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    table.table tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    table.table td {
-        padding: 20px 15px;
-        color: var(--text-dark);
-        vertical-align: middle;
-    }
-
-    table.table tbody td:first-child {
-        color: #8B6F47;
-        font-weight: 600;
-    }
-
-    /* Action Links */
-    .actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .actions a {
-        text-decoration: none;
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        transition: all 0.3s ease;
-        display: inline-block;
-        letter-spacing: 0.3px;
-    }
-
-    .actions a:nth-child(1) {
-        background: #d4d4d4;
-        color: #333;
-    }
-
-    .actions a:nth-child(1):hover {
-        background: #c0c0c0;
-        transform: translateY(-2px);
-    }
-
-    .actions a:nth-child(2) {
-        background: linear-gradient(135deg, #8B6F47 0%, #6B5438 100%);
-        color: var(--white);
-    }
-
-    .actions a:nth-child(2):hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
-    }
-
-    /* Create Button */
-    .create-btn {
-        display: inline-block;
-        margin-top: 30px;
-        padding: 14px 30px;
-        background: linear-gradient(135deg, #8B6F47 0%, #6B5438 100%);
-        color: var(--white);
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        transition: all 0.3s ease;
-    }
-
-    .create-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(139, 111, 71, 0.3);
-    }
-
-    /* Status Badge */
-    .status-badge {
-        padding: 6px 14px;
-        border-radius: 20px;
-        display: inline-block;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-        .sidebar {
-            width: 70px;
-        }
-
-        .main-content {
-            margin-left: 70px;
-            padding: 15px;
-        }
-
-        .sidebar-logo p,
-        .sidebar-menu a span:not(.icon) {
-            display: none;
-        }
-
-        .sidebar-menu a {
-            justify-content: center;
-            padding: 12px;
-        }
-
-        .crud-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .crud-header h1 {
-            font-size: 2rem;
-        }
-
-        .crud-content {
-            padding: 25px;
-        }
-
-        table.table th, 
-        table.table td {
-            padding: 12px 8px;
-            font-size: 0.85rem;
-        }
-
-        .actions {
-            flex-direction: column;
-        }
-
-        .actions a {
-            width: 100%;
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 992px) {
-        .table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-    }
-</style>
-
-<div class="dashboard-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <img src="/images/logo_white.png" alt="Reservue Logo" class="logo-img">
-            <p>Admin Dashboard</p>
-        </div>
-
-        <ul class="sidebar-menu">
-            <li><a href="{{ path('app_dashboard') }}"><span class="icon">📊</span>Dashboard</a></li>
-            <li><a href="{{ path('app_product_index') }}"><span class="icon">📦</span>Product Inventory</a></li>
-            <li><a href="{{ path('app_bookings_index') }}" class="active"><span class="icon">🎫</span>Bookings</a></li>
-            <li><a href="{{ path('app_category_index') }}"><span class="icon">📁</span>Categories</a></li>
-        </ul>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
+{% block dashboard_body %}
         <div class="crud-container">
             <div class="crud-header">
-                <h1>Bookings Management</h1>
-                <div class="header-buttons">
-                    <a href="{{ path('app_bookings_new') }}" class="btn-new">
-                        ➕ Create New Booking
-                    </a>
-                </div>
+                <h1>
+                    <span class="header-icon" aria-hidden="true">🎫</span>
+                    Bookings
+                </h1>
+                <p class="crud-subtitle" style="margin:0.35rem 0 0;color:var(--text-light,#666);font-size:0.9rem;">
+                    Customer requests from the public book page appear here automatically.
+                </p>
             </div>
 
             <div class="crud-content">
@@ -389,32 +19,73 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Booking ID</th>
-                            <th>Booking Code</th>
-                            <th>Booking Date</th>
+                            <th>Reference</th>
+                            <th>Submitted</th>
                             <th>Status</th>
                             <th>Type</th>
+                            <th>Booked item</th>
+                            <th>Travel date</th>
+                            <th>Travelers</th>
+                            <th>Contact</th>
+                            <th>Est. total</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for booking in bookings %}
+                            {% set status_locked = booking.status.value in ['completed', 'cancelled'] %}
                             <tr>
                                 <td>{{ booking.id }}</td>
-                                <td>{{ booking.bookingId }}</td>
-                                <td>{{ booking.bookingCode }}</td>
-                                <td>{{ booking.bookingDate ? booking.bookingDate|date('Y-m-d H:i:s T') : '' }}</td>
-                                <td>{{ booking.bookingStatus.value }}</td>
-                                <td>{{ booking.bookingType }}</td>
-                                <td class="actions">
-                                    <a href="{{ path('app_bookings_show', {'id': booking.id}) }}">👁️ Show</a>
-                                    <a href="{{ path('app_bookings_edit', {'id': booking.id}) }}">✏️ Edit</a>
+                                <td><strong>{{ booking.referenceCode }}</strong></td>
+                                <td>{{ booking.createdAt ? booking.createdAt|date('Y-m-d H:i') : '—' }}</td>
+                                <td style="min-width:200px;">
+                                    {% if booking.statusLocked %}
+                                        {% set st = booking.status.value %}
+                                        {% set badge_class = st == 'completed' ? 'badge-booking-completed' : 'badge-booking-cancelled' %}
+                                        <span class="{{ badge_class }}">{{ st|capitalize }}</span>
+                                        <span style="display:block;font-size:0.75rem;color:var(--text-light,#888);margin-top:0.25rem;">Locked</span>
+                                    {% else %}
+                                    {# Top-level Turbo visit: in-frame POST+redirect can yield “Content missing” if the response frame is not found #}
+                                    <form method="post" action="{{ path('app_bookings_quick_status', {id: booking.id}) }}" data-turbo-frame="_top" style="display:flex;flex-wrap:wrap;gap:0.4rem;align-items:center;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('status' ~ booking.id) }}">
+                                        <label class="visually-hidden" for="booking-status-{{ booking.id }}">Status</label>
+                                        <select id="booking-status-{{ booking.id }}" name="status" class="form-control" style="min-width:130px;font-size:0.85rem;padding:0.35rem 0.5rem;">
+                                            <option value="pending" {% if booking.status.value == 'pending' %}selected{% endif %}>Pending</option>
+                                            <option value="completed" {% if booking.status.value == 'completed' %}selected{% endif %}>Completed</option>
+                                            <option value="cancelled" {% if booking.status.value == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                        </select>
+                                        <button type="submit" class="btn-action btn-edit" style="padding:0.35rem 0.65rem;font-size:0.8rem;white-space:nowrap;">Save</button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                                <td>{{ booking.bookingKind|capitalize }}</td>
+                                <td style="max-width:200px;white-space:normal;word-break:break-word;">
+                                    {{ booking.displayTitle }}
+                                </td>
+                                <td>{{ booking.travelDate ? booking.travelDate|date('Y-m-d') : '—' }}</td>
+                                <td>{{ booking.numberOfTravelers }}</td>
+                                <td style="max-width:180px;white-space:normal;word-break:break-word;">
+                                    {{ booking.contactDisplayName }}<br>
+                                    <a href="mailto:{{ booking.contactEmail }}">{{ booking.contactEmail }}</a>
+                                </td>
+                                <td>₱{{ booking.estimatedTotal|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <div class="action-links">
+                                        <a href="{{ path('app_bookings_show', {'id': booking.id}) }}" class="btn-action btn-show">
+                                            <span class="icon">👁️</span> Show
+                                        </a>
+                                        {% if not status_locked %}
+                                        <a href="{{ path('app_bookings_edit', {'id': booking.id}) }}" class="btn-action btn-edit">
+                                            <span class="icon">✏️</span> Full edit
+                                        </a>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="7" style="text-align:center; color: var(--text-light); padding: 40px;">
-                                    🎫 No bookings found. Create your first booking to get started!
+                                <td colspan="11" style="text-align:center; color: var(--text-light); padding: 40px;">
+                                    No customer booking requests yet. They will appear when guests submit the form on the book page.
                                 </td>
                             </tr>
                         {% endfor %}
@@ -422,6 +93,4 @@
                 </table>
             </div>
         </div>
-    </main>
-</div>
 {% endblock %}

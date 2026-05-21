@@ -1,0 +1,54 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}{{ travel_package.name }}{% endblock %}
+
+{% block dashboard_body %}
+        <div class="category-container">
+            <div class="category-header">
+                <h1>
+                    <span class="header-icon">🧳</span>
+                    {{ travel_package.name }}
+                </h1>
+                <div class="header-buttons">
+                    <a href="{{ path('app_travel_package_edit', {'id': travel_package.id}) }}" class="btn-new">✏️ Edit</a>
+                    <a href="{{ path('app_travel_package_index') }}" class="btn-action btn-show">← List</a>
+                </div>
+            </div>
+
+            <div class="table-wrapper" style="padding: 1.5rem;">
+                <p><strong>Category:</strong> {{ travel_package.category ? travel_package.category.name : '—' }}</p>
+                <p><strong>Duration:</strong> {{ travel_package.durationLabel }}</p>
+                <p><strong>Price per person:</strong> ₱{{ travel_package.pricePerPersonFloat|number_format(2, '.', ',') }}</p>
+                <p class="form-help" style="margin-top:0.5rem;">Included products are for what’s included in the package; they do not affect the package price.</p>
+                <p><strong>Published:</strong> {{ travel_package.isPublished ? 'Yes' : 'No' }}</p>
+                {% if travel_package.shortDescription %}
+                    <p><strong>Summary:</strong> {{ travel_package.shortDescription }}</p>
+                {% endif %}
+                <p><strong>Image:</strong> <code>{{ travel_package.imagePath }}</code></p>
+
+                <h2 style="margin-top:1.5rem;font-size:1.1rem;color:#6B5438;">Included products (live from inventory)</h2>
+                {% if travel_package.products is not empty %}
+                    <table class="table" style="margin-top:0.75rem;">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Inventory price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in travel_package.products %}
+                            <tr>
+                                <td>{{ p.name }}</td>
+                                <td class="category-description">{{ p.description|default('—') }}</td>
+                                <td>₱{{ p.price|number_format(2, '.', ',') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-records" style="padding:1rem;">No products attached to this package.</p>
+                {% endif %}
+            </div>
+        </div>
+{% endblock %}

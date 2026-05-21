@@ -1,0 +1,471 @@
+{% extends 'customer_booking/layout.html.twig' %}
+
+{% block title %}Book a trip — Reservue{% endblock %}
+
+{% block body %}
+<main class="rv-shell rv-shell--book">
+    <section class="rv-book-main">
+        <header id="rv-packages" class="rv-hero rv-hero--book">
+            <h1>Travel packages</h1>
+            <p>Choose a package, set your travel date and party size, then complete your details. Use the filters below and click <strong>Apply</strong> to update packages and inventory.</p>
+        </header>
+
+        <div class="rv-toolbar" role="search" aria-label="Refine packages">
+            <div class="rv-toolbar__intro">
+                <span class="rv-toolbar__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                </span>
+                <div>
+                    <h2 class="rv-toolbar__title">Refine your search</h2>
+                    <p class="rv-toolbar__hint">Choose category and budget, then click <strong>Apply</strong> to search. Travel packages and catalog items both match your filters.</p>
+                </div>
+            </div>
+            <form id="rv-book-filters" class="rv-toolbar__form" method="get" action="{{ path('app_customer_booking_index') }}">
+                <div class="rv-toolbar__fields">
+                    <div class="rv-filter-group">
+                        <label for="filter-category">Category</label>
+                        <select id="filter-category" name="category">
+                            <option value="">All categories</option>
+                            {% for cat in booking_categories %}
+                                <option value="{{ cat.id }}" {% if filter_category == (cat.id ~ '') %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="rv-filter-group">
+                        <label for="filter-budget">Budget / person</label>
+                        <select id="filter-budget" name="budget">
+                            <option value="">Any budget</option>
+                            <option value="economy" {% if filter_budget == 'economy' %}selected{% endif %}>Up to ₱999</option>
+                            <option value="moderate" {% if filter_budget == 'moderate' %}selected{% endif %}>₱1,000 – ₱2,499</option>
+                            <option value="premium" {% if filter_budget == 'premium' %}selected{% endif %}>₱2,500+</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rv-toolbar__actions">
+                    <button type="submit" class="rv-btn rv-btn-primary">Apply</button>
+                    <a href="{{ path('app_customer_booking_index') }}" class="rv-btn rv-btn-ghost">Reset</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="rv-list rv-package-list">
+        {% for pkg in packages %}
+            <article class="rv-card rv-card--horizontal rv-package-card"
+                     data-package-id="{{ pkg.id }}"
+                     data-price="{{ pkg.effectivePricePerPerson }}"
+                     data-name="{{ pkg.name|e('html_attr') }}"
+                     data-duration="{{ pkg.durationLabel|e('html_attr') }}">
+                <div class="rv-card-media">
+                    <a href="#rv-packages" class="rv-card-link" aria-label="View details for {{ pkg.name }}">
+                        <img class="rv-card-img" src="{{ asset(pkg.cardImagePath) }}" alt="{{ pkg.name }}" loading="lazy" width="640" height="480">
+                    </a>
+                </div>
+                <div class="rv-card-body">
+                    <div class="rv-card-info">
+                        <div class="rv-card-cat">{{ pkg.category ? pkg.category.name : 'Package' }}</div>
+                        <h3 class="rv-card-title">
+                            <a href="#rv-packages" class="rv-card-link">{{ pkg.name }}</a>
+                        </h3>
+                        {% if pkg.shortDescription %}
+                            <p class="rv-card-desc">{{ pkg.shortDescription }}</p>
+                        {% endif %}
+                        {% if pkg.products is not empty %}
+                            <ul class="rv-card-includes">
+                                {% for p in pkg.products %}
+                                    <li>{{ p.name }} — ₱{{ p.price|number_format(2, '.', ',') }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="rv-card-meta">
+                            <div class="rv-duration">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                {{ pkg.durationLabel }}
+                            </div>
+                            <div class="rv-price">₱{{ pkg.effectivePricePerPerson|number_format(2, '.', ',') }} <small>/ person</small></div>
+                        </div>
+                    </div>
+                    <div class="rv-card-actions">
+                        <div class="rv-card-fields">
+                            <div class="rv-field-row">
+                                <label for="rv-travel-date-{{ pkg.id }}">Travel date</label>
+                                <input type="date" id="rv-travel-date-{{ pkg.id }}" class="rv-card-date" required>
+                            </div>
+                            <div class="rv-field-row">
+                                <label for="rv-travelers-{{ pkg.id }}">Travelers</label>
+                                <select id="rv-travelers-{{ pkg.id }}" class="rv-card-travelers">
+                                    {% for n in 1..12 %}
+                                        <option value="{{ n }}">{{ n }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="button" class="rv-btn rv-btn-primary rv-btn-block rv-open-checkout">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                Book now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <p class="rv-empty">No packages match these filters. Try another category or budget range.</p>
+        {% endfor %}
+        </div>
+
+        <div id="rv-inventory" class="rv-inventory-block">
+            <header class="rv-hero rv-hero--book rv-hero--sub">
+                <h2>Other Offers &amp; Deals</h2>
+                <p>Add-ons and catalog items — same booking flow. You will confirm a main travel package when you submit your request.</p>
+            </header>
+            <div class="rv-list rv-inventory-list">
+                {% for item in book_products %}
+                    <article class="rv-card rv-card--horizontal rv-package-card rv-inventory-card"
+                             data-inventory="1"
+                             data-product-id="{{ item.id }}"
+                             data-price="{{ item.price }}"
+                             data-name="{{ item.name|e('html_attr') }}"
+                             data-duration="Catalog item">
+                        <div class="rv-card-media">
+                        <a href="#rv-inventory" class="rv-card-link" aria-label="View details for {{ item.name }}">
+                            <img class="rv-card-img" src="{{ asset(item.imagePath) }}" alt="{{ item.name }}" loading="lazy" width="640" height="480">
+                        </a>
+                        </div>
+                        <div class="rv-card-body">
+                            <div class="rv-card-info">
+                                <div class="rv-card-cat">{{ item.category ? item.category.name|upper : 'SERVICE' }}</div>
+                            <h3 class="rv-card-title">
+                                <a href="#rv-inventory" class="rv-card-link">{{ item.name }}</a>
+                            </h3>
+                                {% if item.description %}
+                                    <p class="rv-card-desc">{{ item.description|slice(0, 280) }}{% if item.description|length > 280 %}…{% endif %}</p>
+                                {% endif %}
+                                <div class="rv-card-meta">
+                                    <div class="rv-duration">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                        Service / add-on
+                                    </div>
+                                    <div class="rv-price">₱{{ item.price|number_format(2, '.', ',') }} <small>per item</small></div>
+                                </div>
+                            </div>
+                            <div class="rv-card-actions">
+                                <div class="rv-card-fields">
+                                    <div class="rv-field-row">
+                                        <label for="rv-inv-date-{{ item.id }}">Travel date</label>
+                                        <input type="date" id="rv-inv-date-{{ item.id }}" class="rv-card-date" required>
+                                    </div>
+                                    <div class="rv-field-row">
+                                        <label for="rv-inv-travelers-{{ item.id }}">Travelers</label>
+                                        <select id="rv-inv-travelers-{{ item.id }}" class="rv-card-travelers">
+                                            {% for n in 1..12 %}
+                                                <option value="{{ n }}">{{ n }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="button" class="rv-btn rv-btn-primary rv-btn-block rv-open-checkout">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                        Book now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% else %}
+                    <p class="rv-empty">No inventory items in this category with a catalog image. Try &quot;All categories&quot; or add photos in Product Inventory.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="rv-checkout-modal" class="rv-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="rv-checkout-title" {% if form_submitted_invalid %}data-rv-open="1"{% endif %}>
+    <div class="rv-modal">
+        <div class="rv-modal-head">
+            <h2 id="rv-checkout-title">Complete your booking</h2>
+            <button type="button" class="rv-modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="rv-modal-body">
+            <p style="margin:0 0 1rem;font-size:0.9rem;color:var(--rv-muted);">Review your trip summary, then add your contact details. This is a travel inquiry — our team will confirm availability.</p>
+            <p id="rv-inventory-modal-note" class="rv-inventory-modal-note" style="display:none;margin:0 0 1rem;padding:0.65rem 0.75rem;font-size:0.85rem;background:var(--rv-panel,#f7f4f0);border-radius:8px;border:1px solid var(--rv-border,#e8e0d8);color:var(--rv-muted);"></p>
+
+            <div class="rv-summary" id="rv-checkout-summary" aria-live="polite">
+                <dl>
+                    <dt>Package</dt>
+                    <dd id="rv-sum-name">—</dd>
+                    <dt>Duration</dt>
+                    <dd id="rv-sum-duration">—</dd>
+                    <dt>Travel date</dt>
+                    <dd id="rv-sum-date">—</dd>
+                    <dt>Travelers</dt>
+                    <dd id="rv-sum-travelers">—</dd>
+                    <dt>Estimated total</dt>
+                    <dd id="rv-sum-total">—</dd>
+                </dl>
+            </div>
+
+            {% if form_submitted_invalid %}
+                <div class="rv-form-errors">
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
+            {{ form_start(form, {
+                attr: {
+                    id: 'rv-checkout-form',
+                    novalidate: 'novalidate'
+                },
+                action: path('app_customer_booking_index', preserve_query|default({}))
+            }) }}
+
+            {{ form_errors(form.packageId) }}
+            {{ form_errors(form.productId) }}
+            {{ form_errors(form.bookingContext) }}
+            <div class="rv-visually-hidden" aria-hidden="true">
+                {{ form_widget(form.packageId) }}
+                {{ form_widget(form.productId) }}
+                {{ form_widget(form.bookingContext) }}
+            </div>
+            <div class="rv-form-row">
+                {{ form_label(form.travelDate, 'Travel date') }}
+                {{ form_widget(form.travelDate) }}
+                {{ form_errors(form.travelDate) }}
+            </div>
+            <div class="rv-form-row">
+                {{ form_label(form.numberOfTravelers, 'Number of travelers') }}
+                {{ form_widget(form.numberOfTravelers) }}
+                {{ form_errors(form.numberOfTravelers) }}
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--rv-border);margin:1.25rem 0;">
+
+            <div class="rv-form-grid-2">
+                <div class="rv-form-row">
+                    {{ form_label(form.contactFirstName) }}
+                    {{ form_widget(form.contactFirstName) }}
+                    {{ form_errors(form.contactFirstName) }}
+                </div>
+                <div class="rv-form-row">
+                    {{ form_label(form.contactLastName) }}
+                    {{ form_widget(form.contactLastName) }}
+                    {{ form_errors(form.contactLastName) }}
+                </div>
+            </div>
+            <div class="rv-form-row">
+                {{ form_label(form.contactEmail) }}
+                {{ form_widget(form.contactEmail) }}
+                {{ form_errors(form.contactEmail) }}
+            </div>
+            <div class="rv-form-row">
+                {{ form_label(form.contactPhone) }}
+                {{ form_widget(form.contactPhone) }}
+                {{ form_errors(form.contactPhone) }}
+            </div>
+            <div class="rv-form-row">
+                {{ form_label(form.contactPassportNumber) }}
+                {{ form_widget(form.contactPassportNumber) }}
+                {{ form_errors(form.contactPassportNumber) }}
+            </div>
+            <div class="rv-form-row">
+                {{ form_label(form.specialRequests) }}
+                {{ form_widget(form.specialRequests) }}
+                {{ form_errors(form.specialRequests) }}
+            </div>
+
+            <button type="submit" class="rv-btn rv-btn-primary rv-btn-block" style="margin-top:0.5rem;">
+                Submit booking request
+            </button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    var modal = document.getElementById('rv-checkout-modal');
+    if (!modal) return;
+
+    var pkgIdInput = document.getElementById({{ form.packageId.vars.id|json_encode|raw }});
+    var prodIdInput = document.getElementById({{ form.productId.vars.id|json_encode|raw }});
+    var bookingCtxInput = document.getElementById({{ form.bookingContext.vars.id|json_encode|raw }});
+    var dateInput = document.getElementById({{ form.travelDate.vars.id|json_encode|raw }});
+    var travelersSelect = document.getElementById({{ form.numberOfTravelers.vars.id|json_encode|raw }});
+    var specialTa = document.getElementById({{ form.specialRequests.vars.id|json_encode|raw }});
+    var invNote = document.getElementById('rv-inventory-modal-note');
+
+    function fmtPhp(n) {
+        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(n);
+    }
+
+    function openModal() {
+        modal.classList.add('rv-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('rv-open');
+        document.body.style.overflow = '';
+        if (invNote) {
+            invNote.style.display = 'none';
+            invNote.textContent = '';
+        }
+        if (bookingCtxInput) bookingCtxInput.value = '';
+        if (prodIdInput) prodIdInput.value = '';
+    }
+
+    function updateSummary(card) {
+        var isInv = card.getAttribute('data-inventory') === '1';
+        var price = parseFloat(card.getAttribute('data-price'), 10);
+        var name = card.getAttribute('data-name');
+        var duration = card.getAttribute('data-duration');
+        var dateEl = card.querySelector('.rv-card-date');
+        var travEl = card.querySelector('.rv-card-travelers');
+        var d = dateEl && dateEl.value;
+        var t = travEl ? parseInt(travEl.value, 10) : 1;
+        document.getElementById('rv-sum-name').textContent = name || '—';
+        document.getElementById('rv-sum-duration').textContent = duration || '—';
+        document.getElementById('rv-sum-date').textContent = d || '—';
+        document.getElementById('rv-sum-travelers').textContent = t ? String(t) : '—';
+
+        if (isInv) {
+            var totalPhp = (isFinite(price) && t) ? price * t : NaN;
+            document.getElementById('rv-sum-total').textContent = isFinite(totalPhp) ? fmtPhp(totalPhp) : '—';
+            if (pkgIdInput) {
+                pkgIdInput.value = '';
+            }
+            var invPid = card.getAttribute('data-product-id');
+            if (prodIdInput) prodIdInput.value = invPid || '';
+            if (bookingCtxInput) bookingCtxInput.value = 'inventory';
+            if (invNote) {
+                invNote.style.display = 'block';
+                invNote.textContent = 'You are booking a catalog item — continue by completing your details below.';
+            }
+            if (specialTa) {
+                var pid = card.getAttribute('data-product-id');
+                if (!pid || specialTa.value.indexOf('(product #' + pid + ')') === -1) {
+                    var line = 'Interested in catalog item: ' + name + (pid ? ' (product #' + pid + ').' : '.');
+                    specialTa.value = (specialTa.value ? specialTa.value.trim() + '\n\n' : '') + line;
+                }
+            }
+        } else {
+            var total = (isFinite(price) && t) ? price * t : NaN;
+            document.getElementById('rv-sum-total').textContent = isFinite(total) ? fmtPhp(total) : '—';
+            if (pkgIdInput) {
+                pkgIdInput.value = card.getAttribute('data-package-id') || '';
+            }
+            if (prodIdInput) prodIdInput.value = '';
+            if (bookingCtxInput) bookingCtxInput.value = 'package';
+            if (invNote) {
+                invNote.style.display = 'none';
+                invNote.textContent = '';
+            }
+        }
+
+        if (dateInput && d) dateInput.value = d;
+        if (travelersSelect && t) travelersSelect.value = String(t);
+    }
+
+    document.querySelectorAll('.rv-open-checkout').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var card = btn.closest('.rv-package-card');
+            if (!card) return;
+            var dateEl = card.querySelector('.rv-card-date');
+            if (dateEl && !dateEl.value) {
+                dateEl.reportValidity();
+                return;
+            }
+            updateSummary(card);
+            openModal();
+            setTimeout(function () {
+                var firstContact = document.querySelector('#rv-checkout-form input[type="text"], #rv-checkout-form input[type="email"]');
+                if (firstContact) firstContact.focus();
+            }, 100);
+        });
+    });
+
+    modal.querySelector('.rv-modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('rv-open')) closeModal();
+    });
+
+    if (modal.getAttribute('data-rv-open') === '1') {
+        openModal();
+    }
+
+    if (window.location.hash === '#rv-packages') {
+        requestAnimationFrame(function () {
+            var el = document.getElementById('rv-packages');
+            if (!el) return;
+            var topbar = document.querySelector('.rv-topbar');
+            var header = document.querySelector('.rv-header');
+            var off = (topbar ? topbar.offsetHeight : 0) + (header ? header.offsetHeight : 0) + 16;
+            var y = el.getBoundingClientRect().top + window.pageYOffset - off;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        });
+    }
+
+    {% if form_submitted_invalid %}
+    {% set _pid = form.packageId.vars.value %}
+    {% set _prodid = form.productId.vars.value %}
+    {% set repkg = null %}
+    {% set reitem = null %}
+    {% if _pid is not empty %}
+        {% for p in packages %}
+            {% if p.id == _pid * 1 %}
+                {% set repkg = p %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if _prodid is not empty %}
+        {% for it in book_products %}
+            {% if it.id == _prodid * 1 %}
+                {% set reitem = it %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if reitem %}
+    (function restoreSummaryInv() {
+        var item = {{ {
+            name: reitem.name,
+            duration: 'Catalog item',
+            price: reitem.price
+        }|json_encode|raw }};
+        var d = dateInput && dateInput.value;
+        var t = travelersSelect ? parseInt(travelersSelect.value, 10) : 1;
+        document.getElementById('rv-sum-name').textContent = item.name || '—';
+        document.getElementById('rv-sum-duration').textContent = item.duration || '—';
+        document.getElementById('rv-sum-date').textContent = d || '—';
+        document.getElementById('rv-sum-travelers').textContent = t ? String(t) : '—';
+        var total = (typeof item.price === 'number' && t) ? item.price * t : NaN;
+        document.getElementById('rv-sum-total').textContent = isFinite(total)
+            ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(total)
+            : '—';
+        if (bookingCtxInput) bookingCtxInput.value = 'inventory';
+        if (prodIdInput) prodIdInput.value = {{ _prodid|json_encode|raw }};
+        if (pkgIdInput) pkgIdInput.value = '';
+    })();
+    {% elseif repkg %}
+    (function restoreSummary() {
+        var pkg = {{ {
+            name: repkg.name,
+            duration: repkg.durationLabel,
+            price: repkg.effectivePricePerPerson
+        }|json_encode|raw }};
+        var d = dateInput && dateInput.value;
+        var t = travelersSelect ? parseInt(travelersSelect.value, 10) : 1;
+        document.getElementById('rv-sum-name').textContent = pkg.name || '—';
+        document.getElementById('rv-sum-duration').textContent = pkg.duration || '—';
+        document.getElementById('rv-sum-date').textContent = d || '—';
+        document.getElementById('rv-sum-travelers').textContent = t ? String(t) : '—';
+        var total = (typeof pkg.price === 'number' && t) ? pkg.price * t : NaN;
+        document.getElementById('rv-sum-total').textContent = isFinite(total)
+            ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(total)
+            : '—';
+    })();
+    {% endif %}
+    {% endif %}
+})();
+</script>
+{% endblock %}

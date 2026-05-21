@@ -1,0 +1,176 @@
+{% import '_macros/rv_dashboard_icons.html.twig' as dui %}
+{# Reusable sidebar — styling from _admin_unified_theme.html.twig #}
+{% set canManage = is_granted('ROLE_ADMIN') %}
+{% set isStaff = is_granted('ROLE_STAFF') %}
+{% set isCustomerOnly = not canManage and not isStaff %}
+{% set profileRoute = profile_route ?? (canManage ? 'app_admin_account_profile' : 'app_account_profile') %}
+{% set passwordRoute = password_route ?? (canManage ? 'app_admin_account_password' : 'app_account_password') %}
+{% set logsRoute = logs_route ?? (canManage ? 'app_admin_logs' : null) %}
+{% set usersRoute = users_route ?? (canManage ? 'app_admin_user_index' : null) %}
+{% set r = app.request.attributes.get('_route')|default('') %}
+
+{% set reservue_dash_frame = 'reservue-dashboard-outlet' %}
+<aside class="sidebar" id="reservue-dashboard-sidebar" role="navigation" aria-label="Dashboard menu">
+    <div class="sidebar-brand">
+        <a href="{{ path(canManage ? 'app_dashboard' : (isCustomerOnly ? 'app_customer_my_trips' : 'app_staff_dashboard')) }}"
+           class="sidebar-brand__link"
+           data-turbo-frame="{{ reservue_dash_frame }}"
+           data-turbo-preload>
+            <img src="/images/logo_white.png" alt="ReserVue" class="sidebar-brand__logo" width="152" height="auto">
+        </a>
+        <p class="sidebar-brand__tagline">{{ canManage ? 'Control center' : (isCustomerOnly ? 'Your journeys' : 'Staff workspace') }}</p>
+    </div>
+
+    <div class="sidebar-scroll">
+        {% if canManage %}
+            <p class="sidebar-nav__label" id="nav-label-workspace">Workspace</p>
+            <ul class="sidebar-menu" aria-labelledby="nav-label-workspace">
+                <li>
+                    <a href="{{ path('app_dashboard') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r == 'app_dashboard' ? 'active' : '' }}">
+                        {{ dui.icon('layout-dashboard', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_product_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_product/' ? 'active' : '' }}">
+                        {{ dui.icon('package', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Product inventory</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_category_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_category/' ? 'active' : '' }}">
+                        {{ dui.icon('folder', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Categories</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_travel_package_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_travel_package/' ? 'active' : '' }}">
+                        {{ dui.icon('luggage', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Travel packages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_traveler_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_traveler/' ? 'active' : '' }}">
+                        {{ dui.icon('user', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Travelers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_bookings_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_bookings/' ? 'active' : '' }}">
+                        {{ dui.icon('ticket', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Bookings</span>
+                    </a>
+                </li>
+            </ul>
+
+            {% if usersRoute or logsRoute %}
+                <p class="sidebar-nav__label" id="nav-label-admin">Administration</p>
+                <ul class="sidebar-menu" aria-labelledby="nav-label-admin">
+                    {% if usersRoute %}
+                        <li>
+                            <a href="{{ path(usersRoute) }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_admin_user/' ? 'active' : '' }}">
+                                {{ dui.icon('id-card', 'sidebar-nav__glyph') }}
+                                <span class="sidebar-nav__text">Users &amp; staff</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if logsRoute %}
+                        <li>
+                            <a href="{{ path(logsRoute) }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_admin_logs/' ? 'active' : '' }}">
+                                {{ dui.icon('clipboard-list', 'sidebar-nav__glyph') }}
+                                <span class="sidebar-nav__text">Audit logs</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        {% elseif isStaff %}
+            <p class="sidebar-nav__label" id="nav-label-workspace">Workspace</p>
+            <ul class="sidebar-menu" aria-labelledby="nav-label-workspace">
+                <li>
+                    <a href="{{ path('app_staff_dashboard') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r == 'app_staff_dashboard' ? 'active' : '' }}">
+                        {{ dui.icon('layout-dashboard', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_product_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_product/' ? 'active' : '' }}">
+                        {{ dui.icon('package', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">My products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_travel_package_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_travel_package/' ? 'active' : '' }}">
+                        {{ dui.icon('luggage', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Travel packages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_traveler_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_traveler/' ? 'active' : '' }}">
+                        {{ dui.icon('user', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">My travelers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_bookings_index') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_bookings/' ? 'active' : '' }}">
+                        {{ dui.icon('ticket', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Bookings</span>
+                    </a>
+                </li>
+            </ul>
+        {% else %}
+            <p class="sidebar-nav__label" id="nav-label-workspace">Menu</p>
+            <ul class="sidebar-menu" aria-labelledby="nav-label-workspace">
+                <li>
+                    <a href="{{ path('app_customer_my_trips') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r matches '/^app_customer_my_trip/' ? 'active' : '' }}">
+                        {{ dui.icon('luggage', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">My Trips</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_account_profile') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r == 'app_account_profile' ? 'active' : '' }}">
+                        {{ dui.icon('user', 'sidebar-nav__glyph') }}
+                        <span class="sidebar-nav__text">Profile</span>
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
+
+        {% if not isCustomerOnly %}
+        <p class="sidebar-nav__label" id="nav-label-account">Your account</p>
+        <ul class="sidebar-menu sidebar-menu--account" aria-labelledby="nav-label-account">
+            <li>
+                <a href="{{ path(profileRoute) }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r == 'app_admin_account_profile' or r == 'app_account_profile' ? 'active' : '' }}">
+                    {{ dui.icon('user', 'sidebar-nav__glyph') }}
+                    <span class="sidebar-nav__text">My profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path(passwordRoute) }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r == 'app_admin_account_password' or r == 'app_account_password' ? 'active' : '' }}">
+                    {{ dui.icon('lock', 'sidebar-nav__glyph') }}
+                    <span class="sidebar-nav__text">Change password</span>
+                </a>
+            </li>
+        </ul>
+        {% else %}
+        <p class="sidebar-nav__label" id="nav-label-account">Your account</p>
+        <ul class="sidebar-menu sidebar-menu--account" aria-labelledby="nav-label-account">
+            <li>
+                <a href="{{ path('app_account_password') }}" data-turbo-frame="{{ reservue_dash_frame }}" data-turbo-preload class="sidebar-nav__link {{ r == 'app_account_password' ? 'active' : '' }}">
+                    {{ dui.icon('lock', 'sidebar-nav__glyph') }}
+                    <span class="sidebar-nav__text">Change password</span>
+                </a>
+            </li>
+        </ul>
+        {% endif %}
+
+        <ul class="sidebar-menu sidebar-menu--logout">
+            <li>
+                <a href="{{ path('app_logout') }}" class="sidebar-nav__link sidebar-nav__link--logout" data-turbo="false">
+                    {{ dui.icon('log-out', 'sidebar-nav__glyph') }}
+                    <span class="sidebar-nav__text">Log out</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>

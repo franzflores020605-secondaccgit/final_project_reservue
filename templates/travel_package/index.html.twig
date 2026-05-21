@@ -1,0 +1,63 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Travel packages{% endblock %}
+
+{% block dashboard_body %}
+        <div class="category-container">
+            <div class="category-header">
+                <h1>
+                    <span class="header-icon" aria-hidden="true">🧳</span>
+                    Travel Package Management
+                </h1>
+                <div class="header-buttons">
+                    <a href="{{ path('app_travel_package_new') }}" class="btn-new">
+                        ➕ Create New Travel Package
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Products</th>
+                            <th>Price / person</th>
+                            <th>Published</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for pkg in travel_packages %}
+                        <tr>
+                            <td>{{ pkg.id }}</td>
+                            <td class="category-name">{{ pkg.name }}</td>
+                            <td>{{ pkg.category ? pkg.category.name : '—' }}</td>
+                            <td>{{ pkg.products|length }}</td>
+                            <td>₱{{ pkg.effectivePricePerPerson|number_format(2, '.', ',') }}</td>
+                            <td>{{ pkg.isPublished ? 'Yes' : 'No' }}</td>
+                            <td>
+                                <div class="action-links">
+                                    <a href="{{ path('app_travel_package_show', {'id': pkg.id}) }}" class="btn-action btn-show">
+                                        👁️ Show
+                                    </a>
+                                    <a href="{{ path('app_travel_package_edit', {'id': pkg.id}) }}" class="btn-action btn-edit">
+                                        ✏️ Edit
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="no-records">
+                                No travel packages yet. Create one to bundle products for the booking page.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

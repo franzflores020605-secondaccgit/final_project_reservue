@@ -1,0 +1,319 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Playfair Display', serif;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .login-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background-image: url('/images/bg-design.avif');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .content-wrapper {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: stretch;
+        max-width: 1000px;
+        height: 550px;
+    }
+
+    .branding-section {
+        background: linear-gradient(135deg, rgba(160, 120, 90, 0.9), rgba(120, 85, 65, 0.9));
+        padding: 70px 50px;
+        width: 500px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        position: relative;
+    }
+
+    .branding-section::after {
+        content: '';
+        position: absolute;
+        right: -30px;
+        top: 0;
+        bottom: 0;
+        width: 60px;
+        background: linear-gradient(135deg, rgba(160, 120, 90, 0.9), rgba(120, 85, 65, 0.9));
+        clip-path: ellipse(50% 50% at 0% 50%);
+        
+    }
+
+    .branding-section h2 {
+        font-size: 12px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        margin: 0 0 15px 0;
+        font-weight: 400;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .branding-section h1 {
+        font-size: 70px;
+        line-height: 1;
+        margin: 0 0 25px 0;
+        font-weight: 500;
+        font-family: 'Playfair Display', serif;
+        color: rgba(80, 50, 30, 1);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .branding-section p {
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        font-weight: 300;
+        opacity: 0.95;
+    }
+
+    .login-modal {
+        background: white;
+        padding: 70px 55px;
+        width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        margin-left: -30px;
+    }
+
+    .login-modal::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 30px;
+        background: white;
+        clip-path: ellipse(50% 50% at 100% 50%);
+    }
+
+    .login-modal h3 {
+        font-size: 36px;
+        margin: 0 0 45px 0;
+        color: #2c2c2c;
+        font-weight: 400;
+        font-family: 'Playfair Display', serif;
+        text-align: left;
+    }
+
+    .form-group {
+        margin-bottom: 28px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #888;
+        margin-bottom: 10px;
+        font-family: 'Arial', sans-serif;
+        font-weight: 500;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        font-family: 'Arial', sans-serif;
+        transition: all 0.3s;
+        background: #fafafa;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group input[type="email"]:focus,
+    .form-group input[type="password"]:focus {
+        outline: none;
+        border-color: #2196F3;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+
+    .form-group input[type="checkbox"] {
+        margin-right: 8px;
+    }
+
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #555;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 16px;
+        background: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-family: 'Arial', sans-serif;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    }
+
+    .btn-login:hover {
+        background: #1976D2;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    .alert {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .alert-danger {
+        background: #ffebee;
+        color: #c62828;
+        border: 1px solid #ef9a9a;
+    }
+
+    .form-errors {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #ffebee;
+        color: #c62828;
+        border: 1px solid #ef9a9a;
+    }
+
+    @media (max-width: 1024px) {
+        .content-wrapper {
+            flex-direction: column;
+            max-width: 500px;
+            height: auto;
+        }
+
+        .branding-section::after {
+            display: none;
+        }
+
+        .branding-section {
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            padding: 50px 40px;
+        }
+
+        .login-modal {
+            width: 100%;
+            border-radius: 0 0 20px 20px;
+            margin-left: 0;
+            padding: 50px 40px;
+        }
+
+        .login-modal::before {
+            display: none;
+        }
+    }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+<div class="login-container">
+    <div class="login-overlay"></div>
+    
+    <div class="content-wrapper">
+        <div class="branding-section">
+            <h2>TRAVEL</h2>
+            <h1>EXPLORE<br>HORIZONS</h1>
+            <p>Where Your Dream Destinations Come Within Reach</p>
+        </div>
+        
+        <div class="login-modal">
+            <h3>Register</h3>
+
+            {% if form_errors(registrationForm) %}
+                <div class="form-errors">
+                    {{ form_errors(registrationForm) }}
+                </div>
+            {% endif %}
+
+            {{ form_start(registrationForm) }}
+                <div class="form-group">
+                    {{ form_label(registrationForm.username, null, {'label_attr': {'class': ''}}) }}
+                    {{ form_widget(registrationForm.username) }}
+                    {{ form_errors(registrationForm.username) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.email, null, {'label_attr': {'class': ''}}) }}
+                    {{ form_widget(registrationForm.email) }}
+                    {{ form_errors(registrationForm.email) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': ''}}) }}
+                    {{ form_widget(registrationForm.plainPassword) }}
+                    {{ form_errors(registrationForm.plainPassword) }}
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-wrapper">
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        {{ form_label(registrationForm.agreeTerms) }}
+                    </div>
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                </div>
+
+                <button type="submit" class="btn-login">Register</button>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

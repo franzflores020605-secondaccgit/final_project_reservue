@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% block landing_title %}ReserVue{% endblock %}{% endblock %}
+
+{% block stylesheets %}
+    {% include 'landing_page/_stylesheets.html.twig' %}
+    {% block landing_extra_styles %}
+        {% if load_contact_form_assets|default(false) %}
+            {{ encore_entry_link_tags('contact_form') }}
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <div class="reservue-flash-stack" aria-live="polite">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% include 'landing_page/_navbar.html.twig' with {
+        landing_inner: landing_inner|default(false),
+        landing_nav: landing_nav|default(''),
+    } only %}
+    {% block landing_main %}{% endblock %}
+    {% include 'landing_page/_auth_modals.html.twig' %}
+    {% include 'landing_page/_footer.html.twig' %}
+    {% include 'landing_page/_loader.html.twig' %}
+    {% include 'landing_page/_scripts.html.twig' with {
+        landing_enable_scroll_spy: landing_enable_scroll_spy|default(false),
+        open_login_modal: open_login_modal|default(false),
+        open_register_modal: open_register_modal|default(false),
+        load_contact_form_assets: load_contact_form_assets|default(false),
+    } only %}
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Audit Logs{% endblock %}
+
+{% block dashboard_styles %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block dashboard_body %}
+        <div class="product-container">
+            <div class="product-header">
+                <h1>
+                    <span class="header-icon" aria-hidden="true">🧾</span>
+                    Audit Logs
+                </h1>
+            </div>
+
+            <div class="table-wrapper rv-logs-intro">
+                <p class="lead">View all system logs.</p>
+                <ul>
+                    <li><strong>Filter logs by:</strong> User · Action (Book, Create, Update, Delete, Login, Logout) · Date (from / to)</li>
+                    <li><strong>View log details:</strong> Username · Role · Action performed · Affected data · Timestamp</li>
+                </ul>
+                <p class="logs-readonly-note">Logs are read-only — administrators cannot add, edit, or delete log entries.</p>
+            </div>
+
+            <div class="logs-filters">
+                <div>
+                    <label for="filter-user">User</label>
+                    <input type="text" id="filter-user" name="filter_user" placeholder="Username" autocomplete="off">
+                </div>
+                <div>
+                    <label for="filter-action">Action</label>
+                    <select id="filter-action" name="filter_action">
+                        <option value="">All</option>
+                        {% for a in ['Book','Create','Update','Delete','Login','Logout'] %}
+                            <option value="{{ a }}">{{ a }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="filter-from">Date from</label>
+                    <input type="date" id="filter-from" name="filter_from">
+                </div>
+                <div>
+                    <label for="filter-to">Date to</label>
+                    <input type="date" id="filter-to" name="filter_to">
+                </div>
+                <div style="align-self:end;">
+                    <button type="button" id="filter-apply">Apply filters</button>
+                </div>
+            </div>
+
+            <div class="logs-table-wrap">
+                <table id="audit-logs-table" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Action performed</th>
+                            <th>Affected data</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}
+
+{% block dashboard_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+(function () {
+    function rvEscapeAuditDetails(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+    var table = $('#audit-logs-table').DataTable({
+        processing: true,
+        serverSide: true,
+        searching: true,
+        pageLength: 25,
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        order: [[0, 'desc']],
+        ajax: {
+            url: '{{ path('app_admin_logs_data')|e('js') }}',
+            data: function (d) {
+                d.filter_user = document.getElementById('filter-user').value.trim();
+                d.filter_action = document.getElementById('filter-action').value;
+                d.filter_from = document.getElementById('filter-from').value;
+                d.filter_to = document.getElementById('filter-to').value;
+            }
+        },
+        columns: [
+            { data: 'createdAt' },
+            { data: 'username' },
+            { data: 'roleLabel' },
+            { data: 'action' },
+            {
+                data: 'affectedData',
+                className: 'details-cell',
+                render: function (data, type) {
+                    if (data === null || data === undefined || data === '') {
+                        return type === 'display' ? '—' : '';
+                    }
+                    if (type !== 'display' && type !== 'filter') {
+                        return data;
+                    }
+                    return rvEscapeAuditDetails(data).replace(/\n/g, '<br>');
+                }
+            }
+        ],
+        columnDefs: [
+            { targets: [4], orderable: false }
+        ]
+    });
+    document.getElementById('filter-apply').addEventListener('click', function () {
+        table.ajax.reload();
+    });
+})();
+</script>
+{% endblock %}

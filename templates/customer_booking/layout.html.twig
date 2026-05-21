@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Book a trip — Reservue{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('advanture-2/css/google-fonts-local.css') }}">
+    <style>
+        :root {
+            --reservue-brown: #7F5221;
+            --reservue-brown-hover: #5A3A16;
+            --reservue-light-grey: #F4F5F5;
+            --reservue-ink: #2a1d0f;
+            --rv-muted: rgba(42, 29, 15, 0.62);
+            --rv-border: rgba(127, 82, 33, 0.22);
+            --rv-white: #ffffff;
+            --rv-radius: 12px;
+            --rv-shadow: 0 12px 40px rgba(42, 29, 15, 0.08);
+            --rv-accent-soft: rgba(127, 82, 33, 0.12);
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--reservue-ink);
+            background: var(--reservue-light-grey);
+            line-height: 1.5;
+        }
+        a { color: var(--reservue-brown); text-decoration: none; }
+        a:hover { color: var(--reservue-brown-hover); text-decoration: underline; }
+        .rv-topbar {
+            background: var(--reservue-brown);
+            color: var(--rv-white);
+            text-align: center;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        .rv-header {
+            background: var(--rv-white);
+            border-bottom: 1px solid var(--rv-border);
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .rv-header-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0.65rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .rv-book-navbar-brand {
+            display: inline-flex;
+            align-items: center;
+            padding-top: 0;
+            padding-bottom: 0;
+            line-height: 0;
+        }
+        .rv-book-navbar-brand:hover { text-decoration: none; }
+        .reservue-logo-navbar {
+            height: 72px;
+            width: auto;
+            max-height: 76px;
+            display: block;
+            object-fit: contain;
+        }
+        .rv-nav {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        .rv-nav a {
+            color: var(--reservue-ink) !important;
+            text-decoration: none !important;
+        }
+        .rv-nav a:hover,
+        .rv-nav a:focus {
+            color: var(--reservue-brown) !important;
+        }
+        .rv-shell--book {
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+        .rv-book-main {
+            min-width: 0;
+        }
+        .rv-hero--book {
+            text-align: center;
+            padding: 2.25rem 1.5rem 1.75rem;
+            border-radius: calc(var(--rv-radius) + 6px);
+            background:
+                radial-gradient(900px 280px at 50% 0%, rgba(127, 82, 33, 0.14), rgba(255, 255, 255, 0) 62%),
+                linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
+            border: 1px solid rgba(127, 82, 33, 0.12);
+            box-shadow: 0 14px 55px rgba(42, 29, 15, 0.06);
+        }
+        .rv-hero--book h1 { margin-bottom: 0.4rem; }
+        .rv-hero--book p { max-width: 48rem; line-height: 1.6; margin-left: auto; margin-right: auto; }
+        .rv-hero--sub {
+            margin-top: 3rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid var(--rv-border);
+        }
+        .rv-hero--sub h2 {
+            margin: 0 0 0.35rem;
+            font-family: 'Abril Fatface', cursive;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 400;
+            color: var(--reservue-brown);
+        }
+        .rv-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 1.25rem 1.75rem;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(127, 82, 33, 0.14);
+            border-radius: calc(var(--rv-radius) + 2px);
+            padding: 1.35rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--rv-shadow);
+            position: sticky;
+            top: 110px;
+            z-index: 40;
+        }
+        .rv-toolbar__intro {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            flex: 1 1 220px;
+            min-width: min(100%, 240px);
+        }
+        .rv-toolbar__icon {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--rv-accent-soft);
+            color: var(--reservue-brown);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .rv-toolbar__title {
+            margin: 0 0 0.2rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--reservue-ink);
+            letter-spacing: -0.01em;
+        }
+        .rv-toolbar__hint {
+            margin: 0;
+            font-size: 0.8125rem;
+            color: var(--rv-muted);
+            line-height: 1.45;
+        }
+        .rv-toolbar__form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 1rem 1.25rem;
+            flex: 2 1 320px;
+        }
+        .rv-toolbar__intro { flex: 0 1 340px; }
+        .rv-toolbar__form { flex: 1 1 auto; justify-content: flex-end; }
+        .rv-toolbar__fields { flex-wrap: nowrap; }
+        @media (max-width: 860px) {
+            .rv-toolbar { top: 86px; }
+            .rv-toolbar__fields { flex-wrap: wrap; }
+        }
+        .rv-toolbar__fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.25rem;
+            flex: 1 1 auto;
+        }
+        .rv-toolbar__fields .rv-filter-group {
+            flex: 1 1 160px;
+            min-width: 140px;
+            margin-bottom: 0;
+        }
+        .rv-toolbar__actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .rv-filter-group { margin-bottom: 1.25rem; }
+        .rv-filter-group label {
+            display: block;
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--rv-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+        .rv-filter-group select {
+            width: 100%;
+            padding: 0.6rem 0.7rem;
+            border: 1px solid var(--rv-border);
+            border-radius: 9px;
+            font: inherit;
+            font-size: 0.9rem;
+            background: var(--rv-white);
+            color: var(--reservue-ink);
+        }
+        .rv-filter-group select:focus {
+            border-color: rgba(127, 82, 33, 0.55);
+            box-shadow: 0 0 0 0.2rem rgba(127, 82, 33, 0.12);
+            outline: none;
+        }
+        .rv-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.65rem 1.1rem;
+            border-radius: 8px;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: filter 0.15s, background 0.15s, color 0.15s;
+        }
+        .rv-btn-primary {
+            background: var(--reservue-brown);
+            color: var(--rv-white);
+        }
+        .rv-btn-primary:hover { filter: brightness(0.96); color: var(--rv-white); transform: translateY(-1px); }
+        .rv-btn-outline {
+            background: transparent;
+            color: var(--reservue-brown);
+            border: 1px solid var(--rv-border);
+        }
+        .rv-btn-outline:hover {
+            background: var(--rv-accent-soft);
+            color: var(--reservue-brown-hover);
+        }
+        .rv-btn-ghost {
+            background: transparent;
+            color: var(--rv-muted);
+            font-weight: 600;
+            padding: 0.55rem 0.85rem;
+        }
+        .rv-btn-ghost:hover {
+            color: var(--reservue-brown);
+            background: var(--rv-accent-soft);
+        }
+        a.rv-btn-ghost {
+            border: none;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            background: transparent !important;
+        }
+        .rv-btn-block { width: 100%; }
+        .rv-hero { margin-bottom: 1.75rem; }
+        .rv-hero h1 {
+            margin: 0 0 0.35rem;
+            font-family: 'Abril Fatface', cursive;
+            font-size: clamp(1.85rem, 4vw, 2.5rem);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            color: var(--reservue-brown);
+        }
+        .rv-hero p { margin: 0; color: var(--rv-muted); max-width: 42rem; }
+        .rv-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .rv-package-list,
+        .rv-inventory-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.4rem;
+        }
+        @media (min-width: 1100px) {
+            .rv-package-list,
+            .rv-inventory-list {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 860px) and (max-width: 1099.98px) {
+            .rv-package-list,
+            .rv-inventory-list {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        .rv-card {
+            background: var(--rv-white);
+            border: 1px solid rgba(127, 82, 33, 0.10);
+            border-radius: var(--rv-radius);
+            overflow: hidden;
+            box-shadow: var(--rv-shadow);
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+        }
+        .rv-card:hover {
+            box-shadow: 0 16px 48px rgba(42, 29, 15, 0.1);
+            border-color: rgba(127, 82, 33, 0.28);
+            transform: translateY(-4px) scale(1.01);
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Inventory hover: feel like a mini modal */
+        .rv-inventory-card:hover {
+            box-shadow: 0 22px 66px rgba(42, 29, 15, 0.16);
+            transform: translateY(-6px) scale(1.02);
+            z-index: 8;
+        }
+        /* Booking cards: premium grid layout (image top, details below) */
+        .rv-card--horizontal {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .rv-card-media {
+            flex: 0 0 auto;
+            height: 190px;
+            position: relative;
+            background: rgba(127, 82, 33, 0.06);
+            align-self: stretch;
+            overflow: hidden;
+        }
+        .rv-card-media .rv-card-img {
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.01);
+            transition: transform 220ms ease;
+        }
+        .rv-card:hover .rv-card-img { transform: scale(1.06); }
+        .rv-card-link { display: block; color: inherit; text-decoration: none !important; }
+        .rv-card--horizontal .rv-card-body {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: stretch;
+            gap: 1rem;
+            padding: 1.1rem 1.15rem 1.2rem;
+        }
+        .rv-card-info {
+            flex: 1 1 auto;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .rv-card-actions {
+            flex: 0 0 auto;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-top: 0.15rem;
+            border-left: none;
+            border-top: 1px solid var(--rv-border);
+            padding-left: 0;
+            padding-top: 1rem;
+            margin-left: 0;
+        }
+        .rv-card-desc {
+            margin: 0 0 0.65rem;
+            font-size: 0.875rem;
+            color: var(--rv-muted);
+            line-height: 1.5;
+        }
+        .rv-card-includes {
+            margin: 0 0 0.75rem;
+            padding-left: 1.1rem;
+            font-size: 0.8125rem;
+            color: var(--rv-muted);
+            list-style: disc;
+            line-height: 1.45;
+        }
+        .rv-card-meta {
+            margin-top: auto;
+            padding-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.5rem 1rem;
+        }
+        .rv-card-meta .rv-duration { margin-bottom: 0; }
+        .rv-card-meta .rv-price { margin-bottom: 0; }
+        .rv-card-img {
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            width: 100%;
+            display: block;
+        }
+        .rv-card:not(.rv-card--horizontal) .rv-card-body { padding: 1.1rem 1.15rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
+        .rv-card-cat {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(42, 29, 15, 0.62);
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+        .rv-card-title { margin: 0 0 0.15rem; font-size: 1.1rem; color: var(--reservue-ink); line-height: 1.25; font-weight: 800; letter-spacing: -0.01em; }
+        .rv-card-title a { color: var(--reservue-ink); }
+        .rv-card-title a:hover { color: var(--reservue-brown-hover); }
+        .rv-duration {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.875rem;
+            color: var(--rv-muted);
+            margin-bottom: 0.75rem;
+        }
+        .rv-duration svg { flex-shrink: 0; opacity: 0.75; }
+        .rv-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--reservue-brown);
+            margin-bottom: 0.15rem;
+            text-align: right;
+        }
+        .rv-price small { font-size: 0.75rem; font-weight: 500; color: var(--rv-muted); }
+        .rv-card-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            width: 100%;
+        }
+        .rv-field-row { display: flex; flex-direction: column; gap: 0.25rem; }
+        .rv-field-row label { font-size: 0.75rem; color: var(--rv-muted); font-weight: 600; }
+        .rv-field-row input, .rv-field-row select {
+            width: 100%;
+            padding: 0.5rem 0.55rem;
+            border: 1px solid var(--rv-border);
+            border-radius: 8px;
+            font: inherit;
+            color: var(--reservue-ink);
+        }
+        .rv-field-row input:focus, .rv-field-row select:focus {
+            border-color: rgba(127, 82, 33, 0.55);
+            box-shadow: 0 0 0 0.2rem rgba(127, 82, 33, 0.15);
+            outline: none;
+        }
+        .rv-flash-wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+        .rv-flash {
+            margin-top: 1rem;
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .rv-flash-success {
+            background: rgba(127, 82, 33, 0.1);
+            color: var(--reservue-brown-hover);
+            border: 1px solid var(--rv-border);
+        }
+        .rv-flash-error { background: #fdeaea; color: #8b2e2e; border: 1px solid #f5c4c4; }
+        .rv-empty {
+            width: 100%;
+            text-align: center;
+            padding: 3rem 1.25rem;
+            color: var(--rv-muted);
+            background: var(--rv-white);
+            border-radius: var(--rv-radius);
+            border: 1px dashed var(--rv-border);
+        }
+        @media (max-width: 720px) {
+            .rv-package-list,
+            .rv-inventory-list {
+                grid-template-columns: 1fr;
+            }
+            .rv-card-media {
+                height: 210px;
+            }
+            .rv-card-media .rv-card-img {
+                min-height: 210px;
+            }
+            .rv-toolbar {
+                padding: 1.15rem 1.15rem;
+            }
+            .rv-toolbar__form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .rv-toolbar__actions {
+                justify-content: stretch;
+            }
+            .rv-toolbar__actions .rv-btn-primary {
+                flex: 1;
+            }
+        }
+
+        /* Mobile readability */
+        @media (max-width: 575.98px) {
+            .rv-topbar { font-size: 0.8rem; padding: 0.45rem 0.75rem; }
+            .rv-header-inner { padding: 0.55rem 0.9rem; }
+            .reservue-logo-navbar { height: 58px; }
+            .rv-shell--book { padding: 1.15rem 0.9rem 3.25rem; }
+            .rv-hero--book { padding: 1.35rem 1rem 1.1rem; }
+            .rv-hero h1 { font-size: 1.9rem; }
+            .rv-toolbar { top: 78px; padding: 1rem 0.95rem; }
+            .rv-toolbar__intro { min-width: 100%; }
+            .rv-toolbar__hint { font-size: 0.8rem; }
+            .rv-card--horizontal .rv-card-body { padding: 0.95rem 0.95rem 1rem; }
+            .rv-price { font-size: 1.15rem; }
+        }
+        .rv-modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(42, 29, 15, 0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .rv-modal-backdrop.rv-open { display: flex; }
+        .rv-modal {
+            background: var(--rv-white);
+            border-radius: var(--rv-radius);
+            max-width: 520px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 80px rgba(42, 29, 15, 0.22);
+            border: 1px solid rgba(127, 82, 33, 0.12);
+        }
+        .rv-modal-head {
+            padding: 1.25rem 1.35rem;
+            border-bottom: 1px solid var(--rv-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .rv-modal-head h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-family: 'Abril Fatface', cursive;
+            font-weight: 400;
+            color: var(--reservue-brown);
+        }
+        .rv-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--rv-muted);
+            padding: 0.15rem;
+        }
+        .rv-modal-body { padding: 1.25rem 1.35rem 1.5rem; }
+        .rv-summary {
+            background: var(--rv-accent-soft);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--rv-border);
+        }
+        .rv-summary dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 1rem; }
+        .rv-summary dt { color: var(--rv-muted); margin: 0; }
+        .rv-summary dd { margin: 0; font-weight: 600; color: var(--reservue-ink); }
+        .rv-form-row { margin-bottom: 1rem; }
+        .rv-form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1rem;
+            margin-bottom: 0;
+        }
+        .rv-form-grid-2 .rv-form-row { margin-bottom: 1rem; }
+        @media (max-width: 520px) {
+            .rv-form-grid-2 { grid-template-columns: 1fr; }
+        }
+        .rv-form-row label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--reservue-ink); }
+        .rv-form-row input, .rv-form-row textarea, .rv-form-row select {
+            width: 100%;
+            padding: 0.55rem 0.65rem;
+            border: 1px solid var(--rv-border);
+            border-radius: 8px;
+            font: inherit;
+            color: var(--reservue-ink);
+        }
+        .rv-form-row input:focus, .rv-form-row textarea:focus, .rv-form-row select:focus {
+            border-color: rgba(127, 82, 33, 0.55);
+            box-shadow: 0 0 0 0.2rem rgba(127, 82, 33, 0.15);
+            outline: none;
+        }
+        .rv-form-errors {
+            color: #a32020;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .rv-form-errors ul { margin: 0; padding-left: 1.1rem; }
+        .rv-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        .rv-modal-field-inv-pkg { width: 100%; max-width: 100%; padding: 0.55rem 0.65rem; border-radius: 8px; border: 1px solid var(--rv-border, #e8e0d8); font: inherit; background: #fff; }
+
+        #rv-packages { scroll-margin-top: 120px; }
+
+        #cb-discovery-wrap {
+            background: var(--reservue-light-grey);
+            border-top: 1px solid var(--rv-border);
+        }
+        .cb-discovery-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+        .cb-discovery-section {
+            padding: 3rem 0 3.5rem;
+        }
+        .cb-section-head {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .cb-section-head h2 {
+            margin: 0 0 0.5rem;
+            font-family: 'Abril Fatface', cursive;
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            font-weight: 400;
+            color: var(--reservue-brown);
+        }
+        .cb-section-lead {
+            margin: 0 auto;
+            max-width: 36rem;
+            color: var(--rv-muted);
+            font-size: 0.95rem;
+        }
+        .cb-dest-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .cb-dest-grid--5 {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        .cb-dest-grid--4 {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+        @media (min-width: 992px) {
+            .cb-dest-grid--5 { grid-template-columns: repeat(5, 1fr); }
+            .cb-dest-grid--4 { grid-template-columns: repeat(4, 1fr); }
+        }
+        .cb-dest-card {
+            background: var(--rv-white);
+            border-radius: var(--rv-radius);
+            overflow: hidden;
+            box-shadow: var(--rv-shadow);
+            border: 1px solid var(--rv-border);
+            display: flex;
+            flex-direction: column;
+        }
+        .cb-dest-card__media {
+            display: block;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.25s ease;
+        }
+        .cb-dest-card:hover .cb-dest-card__media {
+            transform: scale(1.03);
+        }
+        .cb-dest-card__body {
+            padding: 1rem 1.1rem 1.15rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .cb-dest-card__row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+        .cb-dest-card__title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        .cb-dest-card__title a {
+            color: var(--reservue-brown);
+            text-decoration: none;
+        }
+        .cb-dest-card__title a:hover {
+            color: var(--reservue-brown-hover);
+            text-decoration: underline;
+        }
+        .cb-dest-card__price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2f89fc;
+            white-space: nowrap;
+        }
+        .cb-dest-card__price--small { font-size: 0.95rem; }
+        .cb-dest-card__price--small small {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--rv-muted);
+        }
+        .cb-dest-card__stars {
+            margin: 0 0 0.5rem;
+            font-size: 0.75rem;
+            color: #f9be37;
+            letter-spacing: 0.05em;
+        }
+        .cb-dest-card__stars span {
+            color: var(--rv-muted);
+            margin-left: 0.25rem;
+        }
+        .cb-dest-card__desc {
+            margin: 0 0 0.65rem;
+            font-size: 0.85rem;
+            color: var(--rv-muted);
+            line-height: 1.45;
+            flex: 1;
+        }
+        .cb-dest-card__meta {
+            margin: 0 0 0.75rem;
+            font-size: 0.8rem;
+            color: var(--rv-muted);
+        }
+        .cb-dest-card__cta {
+            align-self: flex-start;
+            display: inline-block;
+            padding: 0.45rem 1rem;
+            background: var(--reservue-brown);
+            color: #fff !important;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none !important;
+        }
+        .cb-dest-card__cta:hover {
+            filter: brightness(0.96);
+            color: #fff !important;
+        }
+        {% block extra_styles %}{% endblock %}
+    </style>
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="page-book-reservue">
+<div class="rv-topbar">
+    {% block topbar %}Curated travel packages — secure checkout-style booking with Reservue{% endblock %}
+</div>
+<header class="rv-header">
+    <div class="rv-header-inner">
+        <a class="rv-book-navbar-brand" href="{{ path('app_landing') }}" title="ReserVue home">
+            <img
+                class="reservue-logo-navbar"
+                src="{{ asset('advanture-2/images/final_logo.png') }}"
+                width="288"
+                height="76"
+                alt="ReserVue"
+            >
+        </a>
+        <nav class="rv-nav" aria-label="Primary">
+            <a href="{{ path('app_landing') }}">Home</a>
+            {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_dashboard') }}">My Profile</a>
+                {% elseif is_granted('ROLE_STAFF') %}
+                    <a href="{{ path('app_staff_dashboard') }}">My Profile</a>
+                {% elseif is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_customer_my_trips') }}">My Profile</a>
+                {% endif %}
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+{# Only show booking-scoped flashes on the customer booking pages. #}
+{% for label in ['booking_error', 'booking_success', 'booking_info'] %}
+    {% for message in app.flashes(label) %}
+        <div class="rv-flash-wrap">
+            <div class="rv-flash {% if label == 'booking_error' %}rv-flash-error{% else %}rv-flash-success{% endif %}" role="alert">{{ message }}</div>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{% block body %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

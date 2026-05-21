@@ -1,0 +1,120 @@
+.reservue-contact-form {
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
+}
+
+.reservue-contact-form h3 {
+    font-family: 'Abril Fatface', Georgia, serif;
+    color: #2a1d0f;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+}
+
+.reservue-contact-field {
+    margin-bottom: 1.1rem;
+}
+
+.reservue-contact-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--reservue-brown, #7f5221);
+    margin-bottom: 0.35rem;
+}
+
+.reservue-contact-input {
+    width: 100%;
+    border: 1px solid rgba(42, 29, 15, 0.15);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reservue-contact-input:focus {
+    outline: none;
+    border-color: var(--reservue-brown, #7f5221);
+    box-shadow: 0 0 0 3px rgba(127, 82, 33, 0.15);
+}
+
+.reservue-contact-input--invalid {
+    border-color: #c62828;
+}
+
+textarea.reservue-contact-input {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.reservue-contact-field-error {
+    color: #b71c1c;
+    font-size: 0.8rem;
+    margin: 0.35rem 0 0;
+}
+
+.reservue-contact-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.reservue-contact-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.reservue-contact-btn--primary {
+    background: var(--reservue-brown, #7f5221);
+    color: #fff;
+}
+
+.reservue-contact-btn--primary:hover:not(:disabled) {
+    filter: brightness(1.05);
+}
+
+.reservue-contact-btn--secondary {
+    background: #e8e0d8;
+    color: #2a1d0f;
+    margin-top: 0.75rem;
+}
+
+.reservue-contact-btn--secondary:hover {
+    filter: brightness(0.97);
+}
+
+.reservue-contact-alert {
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.reservue-contact-alert--success {
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    color: #1b5e20;
+}
+
+.reservue-contact-alert--success strong {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.reservue-contact-alert--error {
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #b71c1c;
+}
+
+.reservue-contact-form--success .reservue-contact-alert--success p {
+    margin: 0 0 0.5rem;
+}

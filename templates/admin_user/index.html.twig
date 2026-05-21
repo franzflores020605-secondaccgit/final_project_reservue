@@ -1,0 +1,97 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block dashboard_body %}
+        <div class="user-container">
+            <div class="user-header">
+                <h1>
+                    <span class="header-icon" aria-hidden="true">👥</span>
+                    Users & Staff
+                </h1>
+                <div class="header-buttons">
+                    {% if show_archived %}
+                        <a class="btn-new btn-new--surface" href="{{ path('app_admin_user_index') }}">👁️ Active users only</a>
+                    {% else %}
+                        <a class="btn-new btn-new--surface" href="{{ path('app_admin_user_index', {show_archived: 1}) }}">📂 Include archived</a>
+                    {% endif %}
+                    <a class="btn-new" href="{{ path('app_admin_user_new') }}">➕ New user/staff</a>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">{{ message }}</div>
+                    {% endfor %}
+                {% endfor %}
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    <span title="Admin">👑</span>
+                                {% elseif 'ROLE_STAFF' in user.roles %}
+                                    <span title="Staff">🛠️</span>
+                                {% else %}
+                                    <span title="User">👤</span>
+                                {% endif %}
+                                <span style="margin-left:6px;">{{ user.username }}</span>
+                            </td>
+                            <td>{{ user.email ?? '—' }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    ADMIN
+                                {% elseif 'ROLE_STAFF' in user.roles %}
+                                    STAFF
+                                {% else %}
+                                    USER
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set st = user.status|lower %}
+                                {% if st == 'active' %}
+                                    <span title="In use; can sign in.">Active</span>
+                                {% elseif st == 'archived' %}
+                                    <span title="Soft-deleted: hidden from main list, data kept, cannot sign in.">Archived</span>
+                                {% elseif st == 'disabled' %}
+                                    <span title="Blocked; sign-in denied even with correct password.">Disabled</span>
+                                {% else %}
+                                    {{ user.status|capitalize }}
+                                {% endif %}
+                            </td>
+                            <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i') : '—' }}</td>
+                            <td>
+                                <div class="action-links">
+                                    <a class="btn-action btn-edit" href="{{ path('app_admin_user_edit', {id: user.id}) }}">✏️ Edit</a>
+                                    <form method="post" action="{{ path('app_admin_user_delete', {id: user.id}) }}" style="display:inline-block;" onsubmit="return confirm('Delete this user?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                        <button class="btn-action btn-delete">🗑️ Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="no-records">No users found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

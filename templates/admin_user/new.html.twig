@@ -1,0 +1,18 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}New User{% endblock %}
+
+{% block dashboard_body %}
+        <div class="user-container">
+            <div class="user-header">
+                <h1>Create New User / Staff</h1>
+                <div class="header-buttons">
+                    <a href="{{ path('app_admin_user_index') }}" class="btn btn-secondary" data-turbo-frame="reservue-dashboard-outlet">← Back to List</a>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                {% include 'admin_user/_form.html.twig' with {form: form, button_label: 'Create'} %}
+            </div>
+        </div>
+{% endblock %}

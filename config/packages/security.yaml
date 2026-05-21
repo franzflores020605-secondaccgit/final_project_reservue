@@ -9,18 +9,43 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        # Firewall for API Platform routes
+        api_platform:
+            pattern: ^/api
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /api/login
+                username_path: username
+                password_path: password
+                success_handler: App\Security\JWTAuthenticationSuccessHandler
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
+
+        
         main:
             lazy: true
             provider: app_user_provider
+            user_checker: App\Security\UserStatusChecker
             #custom_authenticator: App\Security\LoginAuthenticator
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 7 days
+                path: /
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
+                # Use a path, not a route name: absolute URLs from the router can mismatch the
+                # request Host (127.0.0.1 vs localhost, ngrok, etc.) and Symfony then falls back to "/".
+                target: /
+            custom_authenticator: 
+                - App\Security\LoginAuthenticator
+                - App\Security\GoogleAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -31,9 +56,37 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-        #- { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER, ROLE_STAFF] }
+
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/dashboard, roles: ROLE_ADMIN }
+        - { path: ^/staff, roles: [ROLE_STAFF, ROLE_ADMIN] }
+        - { path: ^/api/mobile/v1/traveler-packages, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/v1/travelers, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/mobile/v1/my-bookings, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/mobile/v1/bookings, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/mobile/v1/me, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/mobile/v1/auth/google, roles: PUBLIC_ACCESS }
+        - { path: ^/api/mobile/v1/products, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/api/resend-verification-email, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }  
+        - { path: ^/product, roles: IS_AUTHENTICATED }
+        - { path: ^/traveler, roles: IS_AUTHENTICATED }
+        - { path: ^/bookings, roles: [ROLE_ADMIN, ROLE_STAFF] }
+        - { path: ^/category, roles: IS_AUTHENTICATED }
+        - { path: ^/travel-package, roles: [ROLE_ADMIN, ROLE_STAFF] }
+        # Email link must work while logged out (laptop/phone browser — same DB as mobile app).
+        - { path: ^/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/book, roles: PUBLIC_ACCESS }
+        - { path: ^/customer-booking, roles: PUBLIC_ACCESS }
+        - { path: ^/customer, roles: ROLE_USER }
+        - { path: ^/contact/api, roles: PUBLIC_ACCESS }
+        
+        #  - { path: ^/landing_page, roles: ROLE_USER }
+        #  - { path: ^/app_booking_index, roles: ROLE_STAFF }
+         #- { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER, ROLE_STAFF] }
 
 when@test:
     security:

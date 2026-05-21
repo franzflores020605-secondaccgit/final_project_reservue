@@ -1,0 +1,58 @@
+/* Local font-face definitions to keep the landing page fully offline. */
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/poppins/pxiByp8kv8JHgFVrLFj_Z1xlFQ.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/poppins/pxiByp8kv8JHgFVrLDz8Z1xlFQ.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/poppins/pxiEyp8kv8JHgFVrJJfecg.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/poppins/pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/poppins/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/poppins/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Abril Fatface";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/advanture-2/fonts/google/abril_fatface/zOL64pLDlL1D99S8g8PtiKchq-dmjcDidBc.woff2") format("woff2");
+}
+

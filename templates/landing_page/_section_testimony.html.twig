@@ -1,0 +1,35 @@
+<section class="ftco-section testimony-section">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 text-center heading-section heading-section-white ftco-animate">
+                <h2 class="mb-4">Our satisfied customer says</h2>
+                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in</p>
+            </div>
+        </div>
+        <div class="row ftco-animate">
+            <div class="col-md-12">
+                <div class="carousel-testimony owl-carousel ftco-owl">
+                    {% set people = ['person_1.jpg','person_2.jpg','person_3.jpg','person_1.jpg','person_1.jpg'] %}
+                    {% for k in 0..4 %}
+                        <div class="item">
+                            <div class="testimony-wrap p-4 pb-5">
+                                <div class="user-img mb-5" style="background-image: url('{{ asset('advanture-2/images/' ~ people[k]) }}')">
+                                    <span class="quote d-flex align-items-center justify-content-center">
+                                        <i class="icon-quote-left"></i>
+                                    </span>
+                                </div>
+                                <div class="text">
+                                    <p class="mb-5">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+                                    <p class="name">Mark Web</p>
+                                    <span class="position">
+                                        {% if k == 0 %}Marketing Manager{% elseif k == 1 %}Interface Designer{% elseif k == 2 %}UI Designer{% elseif k == 3 %}Web Developer{% else %}System Analyst{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

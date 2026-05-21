@@ -1,0 +1,93 @@
+{% set book_packages_url = path('app_customer_booking_index') ~ '#rv-packages' %}
+{% set places = [
+    {
+        img: 1,
+        reverse: false,
+        title: 'Palawan Island Escape',
+        price: '₱18,500',
+        description: 'Limestone cliffs, hidden lagoons, and crystal-clear waters—perfect for island-hopping and quiet beach days.',
+        days: '3 days 2 nights',
+        location: 'El Nido, Palawan',
+    },
+    {
+        img: 2,
+        reverse: true,
+        title: 'Chocolate Hills & Tarsiers',
+        price: '₱12,900',
+        description: 'See Bohol’s iconic mounds, meet tiny tarsiers, and cruise the Loboc River with a local lunch stop.',
+        days: '2 days 2 nights',
+        location: 'Bohol',
+    },
+    {
+        img: 3,
+        reverse: false,
+        title: 'Banaue Rice Terraces',
+        price: '₱15,400',
+        description: 'Walk ancient Ifugao terraces carved into the mountains, with homestays and sunrise viewpoints.',
+        days: '3 days 2 nights',
+        location: 'Ifugao',
+    },
+    {
+        img: 1,
+        reverse: true,
+        title: 'Siargao Surf & Islands',
+        price: '₱22,000',
+        description: 'Cloud 9 waves, palm-lined roads, and day trips to Sohoton Cove and naked island sandbars.',
+        days: '4 days 3 nights',
+        location: 'Siargao',
+    },
+    {
+        img: 2,
+        reverse: false,
+        title: 'Intramuros Heritage Walk',
+        price: '₱8,900',
+        description: 'Cobblestone streets, Spanish-era forts, museums, and sunset views over Manila Bay.',
+        days: '2 days 1 night',
+        location: 'Manila',
+    },
+] %}
+<section class="ftco-section" id="places">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="mb-4">Most Popular Destination</h2>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            {% for p in places %}
+                <div class="col-sm col-md-6 col-lg ftco-animate">
+                    <div class="{{ p.reverse ? 'destination d-md-flex flex-column-reverse' : 'destination' }}">
+                        <a href="{{ book_packages_url }}" class="img img-2 d-flex justify-content-center align-items-center" style="background-image: url('{{ asset('advanture-2/images/destination-' ~ p.img ~ '.jpg') }}');">
+                            <div class="icon d-flex justify-content-center align-items-center">
+                                <span class="icon-link"></span>
+                            </div>
+                        </a>
+                        <div class="text p-3">
+                            <div class="d-flex">
+                                <div class="one">
+                                    <h3><a href="{{ book_packages_url }}">{{ p.title }}</a></h3>
+                                    <p class="rate">
+                                        <i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-o"></i>
+                                        <span>8 Rating</span>
+                                    </p>
+                                </div>
+                                <div class="two">
+                                    <span class="price">{{ p.price }}</span>
+                                </div>
+                            </div>
+                            <p>{{ p.description }}</p>
+                            <p class="days"><span>{{ p.days }}</span></p>
+                            <hr>
+                            <p class="bottom-area d-flex">
+                                <span><i class="icon-map-o"></i> {{ p.location }}</span>
+                                <span class="ml-auto"><a href="{{ book_packages_url }}">Discover</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

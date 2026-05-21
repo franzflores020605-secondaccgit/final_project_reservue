@@ -1,0 +1,118 @@
+{# Split-pane auth modals — travel branding + white form (login & register) #}
+{% set auth_bg = asset('images/bg-design.avif') %}
+
+{# ——— Login ——— #}
+<div class="modal fade reservue-auth-modal" id="reservueLoginModal" tabindex="-1" role="dialog" aria-labelledby="reservueLoginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 bg-transparent shadow-none">
+            <div class="reservue-auth-shell shadow-lg">
+                <div class="reservue-auth-brand" style="background-image: url('{{ auth_bg }}');">
+                    <div class="reservue-auth-brand-inner">
+                        <p class="reservue-auth-kicker mb-2">TRAVEL</p>
+                        <h2 class="reservue-auth-headline mb-3">EXPLORE<br>HORIZONS</h2>
+                        <p class="reservue-auth-sub mb-0">Where Your Dream Destinations Come Within Reach</p>
+                    </div>
+                </div>
+                <div class="reservue-auth-form-col">
+                    <button type="button" class="close reservue-auth-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="reservue-auth-title mb-4" id="reservueLoginModalLabel">Log in</h3>
+
+                    {% if login_error is defined and login_error %}
+                        <div class="alert alert-danger small">{{ login_error.messageKey|trans(login_error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <p class="mb-3">Signed in as <strong>{{ app.user.userIdentifier }}</strong>.</p>
+                        <a href="{{ path('app_logout') }}" class="btn btn-reservue-brown btn-block btn-lg">Log out</a>
+                    {% else %}
+                        <form method="post" action="{{ path('app_login') }}" id="reservue-login-form" class="reservue-auth-form">
+                            <div class="form-group">
+                                <label for="reservue-login-username" class="reservue-auth-label">USERNAME OR EMAIL</label>
+                                <input type="text" class="form-control reservue-auth-input" value="{{ last_username|default('') }}" name="username" id="reservue-login-username" autocomplete="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reservue-login-password" class="reservue-auth-label">PASSWORD</label>
+                                <input type="password" class="form-control reservue-auth-input" name="password" id="reservue-login-password" autocomplete="current-password" required>
+                            </div>
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            <button type="submit" class="btn btn-reservue-brown btn-lg btn-block text-uppercase font-weight-bold mt-2">Log in</button>
+                            <a href="{{ path('connect_google') }}" class="btn btn-light btn-lg btn-block font-weight-bold mt-3 d-flex align-items-center justify-content-center" style="border: 1px solid rgba(0,0,0,.12); gap: 10px;">
+                                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                                    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.653 32.657 29.154 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.962 3.038l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                                    <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 16.108 19.009 12 24 12c3.059 0 5.842 1.154 7.962 3.038l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+                                    <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.154 36.338 26.715 37.2 24 37.2c-5.133 0-9.62-3.317-11.283-7.93l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+                                    <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.07 12.07 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.97 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                                </svg>
+                                Continue with Google
+                            </a>
+                        </form>
+                        <p class="text-center small text-muted mt-4 mb-0">
+                            No account yet?
+                            <a href="#" class="reservue-switch-to-register font-weight-bold" style="color: var(--reservue-brown);">Sign up</a>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ——— Register ——— #}
+<div class="modal fade reservue-auth-modal" id="reservueRegisterModal" tabindex="-1" role="dialog" aria-labelledby="reservueRegisterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 bg-transparent shadow-none">
+            <div class="reservue-auth-shell shadow-lg">
+                <div class="reservue-auth-brand" style="background-image: url('{{ auth_bg }}');">
+                    <div class="reservue-auth-brand-inner">
+                        <p class="reservue-auth-kicker mb-2">TRAVEL</p>
+                        <h2 class="reservue-auth-headline mb-3">EXPLORE<br>HORIZONS</h2>
+                        <p class="reservue-auth-sub mb-0">Where Your Dream Destinations Come Within Reach</p>
+                    </div>
+                </div>
+                <div class="reservue-auth-form-col">
+                    <button type="button" class="close reservue-auth-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="reservue-auth-title mb-4" id="reservueRegisterModalLabel">Register</h3>
+
+                    {% if registrationForm is defined and registrationForm %}
+                        {{ form_start(registrationForm, { action: path('app_register'), method: 'post', attr: { id: 'reservue-register-form', class: 'reservue-auth-form' } }) }}
+                            {{ form_errors(registrationForm) }}
+
+                            <div class="form-group">
+                                {{ form_label(registrationForm.username, 'USERNAME', { label_attr: { class: 'reservue-auth-label' } }) }}
+                                {{ form_widget(registrationForm.username, { attr: { class: 'form-control reservue-auth-input', autocomplete: 'username' } }) }}
+                                {{ form_errors(registrationForm.username) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(registrationForm.email, 'EMAIL', { label_attr: { class: 'reservue-auth-label' } }) }}
+                                {{ form_widget(registrationForm.email, { attr: { class: 'form-control reservue-auth-input', autocomplete: 'email' } }) }}
+                                {{ form_errors(registrationForm.email) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(registrationForm.plainPassword, 'PASSWORD', { label_attr: { class: 'reservue-auth-label' } }) }}
+                                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control reservue-auth-input', autocomplete: 'new-password' } }) }}
+                                {{ form_errors(registrationForm.plainPassword) }}
+                            </div>
+                            <div class="form-group mb-3">
+                                <div class="form-check px-0 d-flex align-items-start">
+                                    {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'form-check-input mt-1' } }) }}
+                                    {{ form_label(registrationForm.agreeTerms, 'AGREE TERMS', { label_attr: { class: 'form-check-label reservue-auth-check-label' } }) }}
+                                </div>
+                                {{ form_errors(registrationForm.agreeTerms) }}
+                            </div>
+
+                            <button type="submit" class="btn btn-reservue-blue btn-lg btn-block text-uppercase font-weight-bold">Register</button>
+                        {{ form_end(registrationForm) }}
+                        <p class="text-center small text-muted mt-4 mb-0">
+                            Already have an account?
+                            <a href="#" class="reservue-switch-to-login font-weight-bold" style="color: var(--reservue-brown);">Log in</a>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

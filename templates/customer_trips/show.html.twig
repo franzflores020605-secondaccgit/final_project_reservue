@@ -1,0 +1,339 @@
+{% extends 'dashboard/base.html.twig' %}
+{% import '_macros/rv_dashboard_icons.html.twig' as dui %}
+
+{% block title %}Reservation {{ booking.referenceCode }}{% endblock %}
+
+{% block dashboard_styles %}
+<style>
+    .product-container.customer-trip-show {
+        min-height: 0;
+        overflow: visible;
+        padding-bottom: 28px;
+    }
+    .customer-trip-show__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem 1.5rem;
+        padding: 22px 28px 18px;
+        border-bottom: 1px solid var(--rv-border);
+        background: var(--rv-surface-2);
+    }
+    .customer-trip-show__head h1 {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 1.55rem;
+        font-weight: 700;
+        color: var(--rv-brown-dark);
+        margin: 0 0 0.4rem;
+        letter-spacing: -0.02em;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .customer-trip-show__head p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--rv-text-muted);
+        line-height: 1.5;
+        max-width: 36rem;
+    }
+    .customer-trip-show__head .header-buttons {
+        flex-shrink: 0;
+    }
+    .customer-trip-show__head .btn-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .customer-trip-show__head .customer-trip-show__btn-ico {
+        display: inline-flex;
+        vertical-align: middle;
+    }
+    .customer-trip-show__hero {
+        width: 100%;
+        aspect-ratio: 21 / 9;
+        max-height: 280px;
+        background: var(--rv-page-muted, #f4f0eb);
+        overflow: hidden;
+    }
+    .customer-trip-show__hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .customer-trip-show__body {
+        padding: 24px 28px 0;
+    }
+    .customer-trip-show__split {
+        display: grid;
+        gap: 1.75rem;
+        align-items: start;
+    }
+    @media (min-width: 1024px) {
+        .customer-trip-show__split--two {
+            grid-template-columns: minmax(0, 1fr) 320px;
+            column-gap: 2rem;
+        }
+    }
+    .customer-trip-summary {
+        display: grid;
+        grid-template-columns: minmax(150px, 34%) minmax(0, 1fr);
+        column-gap: 1.25rem;
+        row-gap: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+    .customer-trip-summary dt {
+        margin: 0;
+        font-weight: 600;
+        color: var(--rv-brown-dark);
+    }
+    .customer-trip-summary dd {
+        margin: 0;
+        color: var(--rv-text);
+        word-break: break-word;
+    }
+    .customer-trip-summary dd a {
+        color: var(--rv-brown-mid);
+    }
+    .customer-trip-show__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--rv-border);
+    }
+    .customer-trip-receipt-panel__inner {
+        background: linear-gradient(180deg, var(--rv-surface-2) 0%, var(--rv-surface) 100%);
+        border: 1px solid var(--rv-border);
+        border-radius: var(--rv-radius-md, 12px);
+        padding: 1.25rem 1.35rem;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    }
+    @media (min-width: 1024px) {
+        .customer-trip-receipt-panel__inner {
+            position: sticky;
+            top: 88px;
+        }
+    }
+    .customer-trip-receipt-panel__title {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 1.1rem;
+        color: var(--rv-brown-dark);
+        margin: 0 0 0.35rem;
+        font-weight: 700;
+    }
+    .customer-trip-receipt-panel__pkg {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--rv-text);
+        margin-bottom: 0.35rem;
+    }
+    .customer-trip-receipt-panel__meta {
+        font-size: 0.8rem;
+        color: var(--rv-text-muted);
+        margin: 0 0 1rem;
+        line-height: 1.45;
+    }
+    .customer-trip-receipt-panel__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.86rem;
+    }
+    .customer-trip-receipt-panel__table th,
+    .customer-trip-receipt-panel__table td {
+        text-align: left;
+        padding: 0.45rem 0;
+        border-bottom: 1px solid var(--rv-border);
+        vertical-align: top;
+    }
+    .customer-trip-receipt-panel__table th {
+        width: 40%;
+        color: var(--rv-brown-mid);
+        font-weight: 700;
+        padding-right: 0.5rem;
+    }
+    .customer-trip-receipt-panel__table tr:last-child th,
+    .customer-trip-receipt-panel__table tr:last-child td {
+        border-bottom: none;
+    }
+    .customer-trip-receipt-panel__footer {
+        margin: 1rem 0 0;
+        font-size: 0.78rem;
+        color: var(--rv-text-muted);
+    }
+    .customer-trip-show .rv-cust-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    .customer-trip-show .rv-cust-badge--processing { background: #fff3e0; color: #8d5e2a; }
+    .customer-trip-show .rv-cust-badge--completed { background: #dcedc8; color: #33691e; }
+    .customer-trip-show .rv-cust-badge--cancelled { background: #fce4ec; color: #c2185b; }
+    @media (max-width: 1023px) {
+        .customer-trip-show__head {
+            padding: 18px 1.25rem 16px;
+        }
+        .customer-trip-show__body {
+            padding: 20px 1.25rem 0;
+        }
+        .customer-trip-receipt-panel__inner {
+            position: static;
+        }
+        .customer-trip-summary {
+            grid-template-columns: 1fr;
+            row-gap: 0.35rem;
+        }
+        .customer-trip-summary dt {
+            margin-top: 0.65rem;
+        }
+        .customer-trip-summary dt:first-of-type {
+            margin-top: 0;
+        }
+        .customer-trip-summary dd {
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--rv-border);
+        }
+        .customer-trip-summary dd:last-of-type {
+            border-bottom: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_body %}
+<meta name="turbo-page-title" content="Reservation details">
+{% set is_completed = booking.status.value == 'completed' %}
+{% set st = booking.status.value %}
+{% set cust_label = st == 'pending' ? 'Processing' : (st == 'completed' ? 'Completed' : 'Cancelled') %}
+{% set cust_class = st == 'pending' ? 'rv-cust-badge--processing' : (st == 'completed' ? 'rv-cust-badge--completed' : 'rv-cust-badge--cancelled') %}
+
+<div class="product-container customer-trip-show">
+    <header class="customer-trip-show__head">
+        <div>
+            <h1>Booking summary</h1>
+            <p>Everything you submitted on the Book travel form for reference <strong>{{ booking.referenceCode }}</strong>.</p>
+        </div>
+        <div class="header-buttons">
+            <a href="{{ path('app_customer_booking_index') }}" class="btn-new" data-turbo="false">{{ dui.icon('luggage', 'customer-trip-show__btn-ico') }} Book a trip</a>
+        </div>
+    </header>
+
+    <div class="customer-trip-show__body">
+        <div class="customer-trip-show__split{{ is_completed ? ' customer-trip-show__split--two' : '' }}">
+            <div class="customer-trip-show__main">
+                <dl class="customer-trip-summary">
+                    <dt>Reference</dt>
+                    <dd><span style="font-family:ui-monospace,monospace;">{{ booking.referenceCode }}</span></dd>
+
+                    <dt>Submitted</dt>
+                    <dd>{{ booking.createdAt ? booking.createdAt|date('F j, Y g:i a T') : '—' }}</dd>
+
+                    <dt>Type</dt>
+                    <dd>{{ booking.reservationKindLabel }}</dd>
+
+                    <dt>Trip / service</dt>
+                    <dd>{{ booking.displayTitle }}</dd>
+
+                    {% if booking.customerSummaryDetailLine %}
+                    <dt>Details</dt>
+                    <dd>{{ booking.customerSummaryDetailLine }}</dd>
+                    {% endif %}
+
+                    {% if booking.priceDescriptionLine %}
+                    <dt>Pricing</dt>
+                    <dd>{{ booking.priceDescriptionLine }}</dd>
+                    {% endif %}
+
+                    <dt>Travel date</dt>
+                    <dd>{{ booking.travelDate ? booking.travelDate|date('F j, Y') : '—' }}</dd>
+
+                    <dt>Travelers</dt>
+                    <dd>{{ booking.numberOfTravelers }}</dd>
+
+                    <dt>Lead contact — first name</dt>
+                    <dd>{{ booking.contactFirstName }}</dd>
+
+                    <dt>Lead contact — last name</dt>
+                    <dd>{{ booking.contactLastName }}</dd>
+
+                    <dt>Passport number</dt>
+                    <dd>{{ booking.contactPassportNumber }}</dd>
+
+                    <dt>Email</dt>
+                    <dd><a href="mailto:{{ booking.contactEmail }}">{{ booking.contactEmail }}</a></dd>
+
+                    <dt>Phone</dt>
+                    <dd>{{ booking.contactPhone ?: '—' }}</dd>
+
+                    {% if booking.specialRequests %}
+                        <dt>Notes &amp; special requests</dt>
+                        <dd style="white-space:pre-wrap;">{{ booking.specialRequests }}</dd>
+                    {% endif %}
+
+                    <dt>Estimated total</dt>
+                    <dd>₱{{ booking.estimatedTotal|number_format(2, '.', ',') }}</dd>
+
+                    <dt>Status</dt>
+                    <dd><span class="rv-cust-badge {{ cust_class }}">{{ cust_label }}</span></dd>
+                </dl>
+
+                <div class="customer-trip-show__actions">
+                    <a href="{{ path('app_customer_my_trips') }}" class="btn btn-secondary" data-turbo-frame="reservue-dashboard-outlet" data-turbo-preload>← Back to My Reservations</a>
+                    {% if is_completed %}
+                        <a href="{{ path('app_customer_my_trip_receipt', { id: booking.id }) }}" class="btn" style="background:var(--rv-brown-mid);color:#fff;border-color:transparent;" data-turbo="false">Download receipt (PDF)</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if is_completed %}
+                <aside class="customer-trip-receipt-panel" aria-labelledby="customer-receipt-title">
+                    <div class="customer-trip-receipt-panel__inner">
+                        <h2 id="customer-receipt-title" class="customer-trip-receipt-panel__title">Trip receipt</h2>
+                        <span class="customer-trip-receipt-panel__pkg">{{ booking.displayTitle }}</span>
+                        <p class="customer-trip-receipt-panel__meta">Reference <strong>{{ booking.referenceCode }}</strong><br>Issued {{ 'now'|date('F j, Y') }}</p>
+                        <table class="customer-trip-receipt-panel__table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Travel date</th>
+                                    <td>{{ booking.travelDate ? booking.travelDate|date('Y-m-d') : '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Travelers</th>
+                                    <td>{{ booking.numberOfTravelers }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Contact</th>
+                                    <td>
+                                        {{ booking.contactDisplayName }}<br>
+                                        {{ booking.contactEmail }}
+                                        {% if booking.contactPhone %}<br>{{ booking.contactPhone }}{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Amount (estimate)</th>
+                                    <td>PHP {{ booking.estimatedTotal|number_format(2, '.', ',') }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Status</th>
+                                    <td>Completed</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="customer-trip-receipt-panel__footer">Thank you for traveling with ReserVue.</p>
+                    </div>
+                </aside>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

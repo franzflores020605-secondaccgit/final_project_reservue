@@ -1,5 +1,6 @@
 <?php
 ini_set('memory_limit', '2048M'); 
+date_default_timezone_set('Asia/Manila');
 
 use App\Kernel;
 

@@ -1,0 +1,232 @@
+{% extends 'base.html.twig' %}
+
+{# Admin/staff SPA shell: fixed sidebar + fixed top bar; Turbo swaps only #reservue-dashboard-outlet (content card). #}
+
+{% block title %}Workspace{% endblock %}
+
+{% block stylesheets %}
+    {% include '_admin_unified_theme.html.twig' %}
+    <style>
+        turbo-frame.reservue-dashboard-outlet main.main-content {
+            margin-left: 0;
+        }
+        turbo-frame.reservue-dashboard-outlet {
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ebe6e0;
+        }
+        turbo-frame.reservue-dashboard-outlet[busy] {
+            background-color: #ebe6e0;
+        }
+        turbo-frame.reservue-dashboard-outlet[busy] > main.main-content {
+            opacity: 0.72;
+            pointer-events: none;
+            transition: opacity 0.12s ease;
+        }
+        .dashboard-spa-main {
+            flex: 1;
+            margin-left: 260px;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-height: 100vh;
+            background-color: #ebe6e0;
+        }
+        .dashboard-shell-body {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .dashboard-spa-main { margin-left: 72px; }
+        }
+    </style>
+    {% block dashboard_styles %}{% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{% block body %}
+{% set shellProfileRoute = is_granted('ROLE_ADMIN') ? 'app_admin_account_profile' : 'app_account_profile' %}
+<div class="dashboard-container rv-admin-shell">
+    {% include '_sidebar.html.twig' %}
+    <div class="dashboard-spa-main">
+        <header class="dashboard-shell-header" id="reservue-dashboard-shell-header">
+            <div class="dashboard-shell-header__inner">
+                <div class="dashboard-shell-header__titles">
+                    <p class="dashboard-shell-header__eyebrow">
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF') %}
+                            ReserVue workspace
+                        {% else %}
+                            My ReserVue
+                        {% endif %}
+                    </p>
+                    <p class="dashboard-shell-header__subtitle" id="reservue-dashboard-shell-subtitle" hidden></p>
+                </div>
+                {% if app.user %}
+                <div class="dashboard-shell-header__actions">
+                    <span class="dashboard-shell-header__user-chip" title="Signed in as {{ app.user.userIdentifier }}">
+                        <span class="dashboard-shell-header__user-avatar" aria-hidden="true">{{ app.user.userIdentifier|slice(0, 1)|upper }}</span>
+                        <span class="dashboard-shell-header__user-name">{{ app.user.userIdentifier }}</span>
+                    </span>
+                    <a href="{{ path(shellProfileRoute) }}" class="dashboard-shell-header__link" data-turbo-frame="reservue-dashboard-outlet" data-turbo-preload>Profile</a>
+                    <a href="{{ path(is_granted('ROLE_ADMIN') ? 'app_admin_account_password' : 'app_account_password') }}" class="dashboard-shell-header__link dashboard-shell-header__link--muted" data-turbo-frame="reservue-dashboard-outlet" data-turbo-preload>Password</a>
+                </div>
+                {% endif %}
+            </div>
+        </header>
+        <div class="dashboard-shell-body">
+            <turbo-frame id="reservue-dashboard-outlet" class="reservue-dashboard-outlet" target="_self" data-turbo-action="advance">
+                <main class="main-content">
+                    {% block dashboard_body %}{% endblock %}
+                    {% block dashboard_scripts %}{% endblock %}
+                </main>
+            </turbo-frame>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var frameId = 'reservue-dashboard-outlet';
+    var titleSelector = [
+        '.top-bar h2',
+        '.dashboard-page-heading__title',
+        '.product-header h1',
+        '.category-header h1',
+        '.logs-header h1',
+        '.user-header h1',
+        '.crud-header h1',
+        '.traveler-header h1',
+        '.booking-header h1',
+        '.category-detail-header h1',
+        '.booking-show h1',
+        '.customer-trips-header h1'
+    ].join(', ');
+
+    function normalizePath(path) {
+        if (!path || path === '/') {
+            return '/';
+        }
+        return path.replace(/\/+$/, '') || '/';
+    }
+
+    function pathMatchesCurrent(currentNorm, linkNorm) {
+        if (currentNorm === linkNorm) {
+            return true;
+        }
+        if (linkNorm === '/' || linkNorm === '') {
+            return false;
+        }
+        return currentNorm.startsWith(linkNorm + '/');
+    }
+
+    /**
+     * One active item: pick the longest matching link path so /admin/account/password
+     * does not also activate /admin/account (profile).
+     */
+    function syncSidebarActive(pathname) {
+        var sidebar = document.getElementById('reservue-dashboard-sidebar');
+        if (!sidebar) {
+            return;
+        }
+        var currentNorm = normalizePath(pathname);
+        var items = [];
+        sidebar.querySelectorAll('a.sidebar-nav__link[href]').forEach(function (a) {
+            if (a.getAttribute('data-turbo') === 'false') {
+                return;
+            }
+            var href = a.getAttribute('href');
+            if (!href || href.indexOf('#') === 0) {
+                return;
+            }
+            try {
+                var p = normalizePath(new URL(href, window.location.origin).pathname);
+                items.push({ el: a, path: p });
+            } catch (e) {}
+        });
+        var best = null;
+        var bestLen = -1;
+        items.forEach(function (item) {
+            if (!pathMatchesCurrent(currentNorm, item.path)) {
+                return;
+            }
+            if (item.path.length > bestLen) {
+                bestLen = item.path.length;
+                best = item.el;
+            }
+        });
+        items.forEach(function (item) {
+            var on = item.el === best;
+            item.el.classList.toggle('active', on);
+            if (on) {
+                item.el.setAttribute('aria-current', 'page');
+            } else {
+                item.el.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    function syncDocumentTitle(frame) {
+        if (!frame) {
+            return;
+        }
+        var meta = frame.querySelector('meta[name="turbo-page-title"]');
+        if (meta && meta.getAttribute('content')) {
+            document.title = meta.getAttribute('content').trim() + ' · ReserVue';
+            return;
+        }
+        var el = frame.querySelector(titleSelector);
+        if (el) {
+            var t = el.textContent.replace(/\s+/g, ' ').trim();
+            if (t) {
+                document.title = t + ' · ReserVue';
+            }
+        }
+    }
+
+    function syncShellHeader(frame) {
+        var subEl = document.getElementById('reservue-dashboard-shell-subtitle');
+        if (!frame || !subEl) {
+            return;
+        }
+        var metaSub = frame.querySelector('meta[name="turbo-page-subtitle"]');
+        var sub = metaSub && metaSub.getAttribute('content') ? metaSub.getAttribute('content').trim() : '';
+        if (sub) {
+            subEl.textContent = sub;
+            subEl.hidden = false;
+        } else {
+            subEl.textContent = '';
+            subEl.hidden = true;
+        }
+    }
+
+    function onFrameEvent(e) {
+        var f = e.target;
+        if (!f || f.id !== frameId) {
+            return;
+        }
+        syncDocumentTitle(f);
+        syncShellHeader(f);
+        syncSidebarActive(window.location.pathname);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var f = document.getElementById(frameId);
+        if (f) {
+            syncDocumentTitle(f);
+            syncShellHeader(f);
+            syncSidebarActive(window.location.pathname);
+        }
+    });
+    document.addEventListener('turbo:frame-load', onFrameEvent);
+})();
+</script>
+{% endblock %}

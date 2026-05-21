@@ -1,0 +1,54 @@
+{% set book_packages_url = path('app_customer_booking_index') ~ '#rv-packages' %}
+<section class="ftco-section justify-content-end ftco-search">
+    <div class="container-wrap ml-auto">
+        <div class="row no-gutters">
+            <div class="col-md-12 tab-wrap">
+                <div class="reservue-hero-search">
+                    <div class="reservue-hero-search__card">
+                        <div class="reservue-hero-search__head">
+                            <p class="reservue-hero-search__kicker">Plan your next escape</p>
+                            <h2 class="reservue-hero-search__title">Find a trip in minutes</h2>
+                            <p class="reservue-hero-search__sub">Choose where you want to go, then book from curated packages with a single, secure flow.</p>
+                        </div>
+
+                        <form class="search-destination" method="get" action="{{ path('app_customer_booking_index') }}" data-rv-book-search>
+                            <div class="row">
+                                <div class="col-md-8 align-items-end">
+                                    <div class="form-group">
+                                        <label for="hero-q">Where</label>
+                                        <div class="form-field">
+                                            <div class="icon"><span class="icon-map-marker"></span></div>
+                                            <input
+                                                type="text"
+                                                id="hero-q"
+                                                name="q"
+                                                class="form-control"
+                                                placeholder="Search a destination or package (e.g., Siargao, Cebu, Bali)"
+                                                autocomplete="off"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 align-self-end">
+                                    <div class="form-group">
+                                        <div class="form-field">
+                                            <button type="submit" class="form-control btn btn-primary text-center d-flex align-items-center justify-content-center">
+                                                Search packages
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="reservue-hero-search__quick" aria-label="Quick actions">
+                            <a class="reservue-hero-pill" href="{{ book_packages_url }}">Book a trip</a>
+                            <a class="reservue-hero-pill" href="{{ path('app_landing') }}#places">Explore places</a>
+                            <a class="reservue-hero-pill" href="{{ path('app_landing') }}#hotels">See hotels</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

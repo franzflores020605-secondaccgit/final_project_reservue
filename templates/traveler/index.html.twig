@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Traveler index{% endblock %}
+
+{% block dashboard_body %}
+        <div class="product-container">
+            <div class="product-header">
+                <h1>
+                    <span class="header-icon" aria-hidden="true">🧑‍💼</span>
+                    Travelers
+                </h1>
+                <div class="header-buttons">
+                    <a href="{{ path('app_traveler_new') }}" class="btn-new">
+                        ➕ Create new
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>PassportNumber</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for traveler in travelers %}
+                        <tr>
+                            <td>{{ traveler.id }}</td>
+                            <td>{{ traveler.firstName }}</td>
+                            <td>{{ traveler.lastName }}</td>
+                            <td>{{ traveler.email ?: '—' }}</td>
+                            <td>{{ traveler.phone ?: '—' }}</td>
+                            <td>{{ traveler.passportNumber ?: '—' }}</td>
+                            <td>
+                                <div class="action-links">
+                                    <a href="{{ path('app_traveler_show', {'id': traveler.id}) }}" class="btn-action btn-show">
+                                        <span class="icon">👁️</span> Show
+                                    </a>
+                                    <a href="{{ path('app_traveler_edit', {'id': traveler.id}) }}" class="btn-action btn-edit">
+                                        <span class="icon">✏️</span> Edit
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="no-records">👤 No travelers found. Create your first traveler to get started!</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

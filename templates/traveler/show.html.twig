@@ -1,0 +1,54 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Traveler{% endblock %}
+
+{% block dashboard_body %}
+        <div class="product-container">
+            <div class="product-header">
+                <h1>Traveler Details</h1>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ traveler.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>FirstName</th>
+                            <td>{{ traveler.firstName }}</td>
+                        </tr>
+                        <tr>
+                            <th>LastName</th>
+                            <td>{{ traveler.lastName }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{% if traveler.email %}<a href="mailto:{{ traveler.email }}">{{ traveler.email }}</a>{% else %}—{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone</th>
+                            <td>{{ traveler.phone ?: '—' }}</td>
+                        </tr>
+                        <tr>
+                            <th>PassportNumber</th>
+                            <td>{{ traveler.passportNumber ?: '—' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{{ path('app_traveler_index') }}" class="btn btn-secondary">
+                    ← Back to List
+                </a>
+
+                <a href="{{ path('app_traveler_edit', {'id': traveler.id}) }}" class="btn btn-primary">
+                    Edit
+                </a>
+
+                {{ include('traveler/_delete_form.html.twig') }}
+            </div>
+        </div>
+{% endblock %}

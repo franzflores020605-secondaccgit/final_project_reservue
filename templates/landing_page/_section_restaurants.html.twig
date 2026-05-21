@@ -1,0 +1,73 @@
+{% set book_packages_url = path('app_customer_booking_index') ~ '#rv-packages' %}
+{% set restaurants = [
+    {
+        img: 1,
+        title: 'Antonio’s Garden',
+        price: 'from ₱2,800',
+        description: 'Seasonal tasting menus and farm views in the cool ridge air of Tagaytay—ideal for celebrations.',
+        location: 'Tagaytay, Cavite',
+    },
+    {
+        img: 2,
+        title: 'Harbor Grill Cebu',
+        price: 'from ₱650',
+        description: 'Fresh seafood platters and grilled specialties with a relaxed port-city atmosphere.',
+        location: 'Cebu City',
+    },
+    {
+        img: 3,
+        title: 'La Mesa Ilocano Kitchen',
+        price: 'from ₱480',
+        description: 'Authentic pinakbet, bagnet, and longganisa platters served family-style with house vinegar.',
+        location: 'Quezon City, Metro Manila',
+    },
+    {
+        img: 4,
+        title: 'Café by the Ruins Dua',
+        price: 'from ₱380',
+        description: 'Baguio classics—champorado, Sagada coffee, and herb breads—in a garden setting.',
+        location: 'Baguio City',
+    },
+] %}
+<section class="ftco-section" id="restaurants">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="mb-4">Recommended Restaurants</h2>
+            </div>
+        </div>
+        <div class="row">
+            {% for rest in restaurants %}
+                <div class="col-md-6 col-lg-3 ftco-animate">
+                    <div class="destination">
+                        <a href="{{ book_packages_url }}" class="img img-2 d-flex justify-content-center align-items-center" style="background-image: url('{{ asset('advanture-2/images/restaurant-' ~ rest.img ~ '.jpg') }}');">
+                            <div class="icon d-flex justify-content-center align-items-center">
+                                <span class="icon-link"></span>
+                            </div>
+                        </a>
+                        <div class="text p-3">
+                            <div class="d-flex">
+                                <div class="one">
+                                    <h3><a href="{{ book_packages_url }}">{{ rest.title }}</a></h3>
+                                    <p class="rate">
+                                        <i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-o"></i>
+                                        <span>8 Rating</span>
+                                    </p>
+                                </div>
+                                <div class="two">
+                                    <span class="price per-price">{{ rest.price }}<br><small>/person</small></span>
+                                </div>
+                            </div>
+                            <p>{{ rest.description }}</p>
+                            <hr>
+                            <p class="bottom-area d-flex">
+                                <span><i class="icon-map-o"></i> {{ rest.location }}</span>
+                                <span class="ml-auto"><a href="{{ book_packages_url }}">Book Now</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

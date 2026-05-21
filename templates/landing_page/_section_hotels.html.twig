@@ -1,0 +1,87 @@
+{% set book_packages_url = path('app_customer_booking_index') ~ '#rv-packages' %}
+{% set hotels = [
+    {
+        img: 1,
+        reverse: false,
+        title: 'Makati Skyline Suites',
+        price: '₱4,500',
+        description: 'High-floor rooms, rooftop pool, and quick access to Ayala Triangle and business districts.',
+        location: 'Makati City, Metro Manila',
+    },
+    {
+        img: 2,
+        reverse: true,
+        title: 'Boracay White Beach Resort',
+        price: '₱8,200',
+        description: 'Steps from powder-white sand, with beachfront dining and sunset sailing options.',
+        location: 'Malay, Aklan',
+    },
+    {
+        img: 3,
+        reverse: false,
+        title: 'Cebu Harborfront Hotel',
+        price: '₱3,200',
+        description: 'Harbor views, modern rooms, and a great base for city tours and island hopping to Mactan.',
+        location: 'Cebu City',
+    },
+    {
+        img: 4,
+        reverse: true,
+        title: 'Baguio Pine Lodge',
+        price: '₱2,800',
+        description: 'Cool mountain air, fireplace lounges, and short drives to Mines View and strawberry farms.',
+        location: 'Baguio City',
+    },
+    {
+        img: 5,
+        reverse: false,
+        title: 'Davao Gulf Eco Retreat',
+        price: '₱5,100',
+        description: 'Quiet gardens, farm-to-table breakfast, and easy trips to Samal Island beaches.',
+        location: 'Davao City',
+    },
+] %}
+<section class="ftco-section" id="hotels">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="mb-4"><strong>Popular</strong> Hotels</h2>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            {% for h in hotels %}
+                <div class="col-sm col-md-6 col-lg ftco-animate">
+                    <div class="{{ h.reverse ? 'destination d-md-flex flex-column-reverse' : 'destination' }}">
+                        <a href="{{ book_packages_url }}" class="img img-2 d-flex justify-content-center align-items-center" style="background-image: url('{{ asset('advanture-2/images/hotel-' ~ h.img ~ '.jpg') }}');">
+                            <div class="icon d-flex justify-content-center align-items-center">
+                                <span class="icon-link"></span>
+                            </div>
+                        </a>
+                        <div class="text p-3">
+                            <div class="d-flex">
+                                <div class="one">
+                                    <h3><a href="{{ book_packages_url }}">{{ h.title }}</a></h3>
+                                    <p class="rate">
+                                        <i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-o"></i>
+                                        <span>8 Rating</span>
+                                    </p>
+                                </div>
+                                <div class="two">
+                                    <span class="price per-price">{{ h.price }}<br><small>/night</small></span>
+                                </div>
+                            </div>
+                            <p>{{ h.description }}</p>
+                            <hr>
+                            <p class="bottom-area d-flex">
+                                <span><i class="icon-map-o"></i> {{ h.location }}</span>
+                                <span class="ml-auto"><a href="{{ book_packages_url }}">Book Now</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

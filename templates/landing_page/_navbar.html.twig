@@ -1,0 +1,72 @@
+{# Landing home uses #anchors + data-nav-anchor. About & Contact use dedicated routes. #}
+{% set lp = path('app_landing') %}
+{% set inner = landing_inner|default(false) %}
+{% set lp_nav = landing_nav|default('') %}
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light{% if inner %} landing-page-inner scrolled awake{% endif %}" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{{ lp }}{% if not inner %}#top{% endif %}">
+            <img
+                class="reservue-logo-navbar"
+                src="{{ asset('advanture-2/images/final_logo.png') }}"
+                width="288"
+                height="76"
+                alt="ReserVue"
+            >
+        </a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#ftco-nav"
+            aria-controls="ftco-nav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item{% if lp_nav == '' and not inner %} active{% endif %}">
+                    <a href="{% if inner %}{{ lp }}{% endif %}#top" class="nav-link" data-nav-anchor="top">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% if inner %}{{ lp }}{% endif %}#places" class="nav-link" data-nav-anchor="places">Places</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% if inner %}{{ lp }}{% endif %}#hotels" class="nav-link" data-nav-anchor="hotels">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% if inner %}{{ lp }}{% endif %}#blog" class="nav-link" data-nav-anchor="blog">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_landing_about') }}" class="nav-link">About</a>
+                </li>
+                <li class="nav-item{% if lp_nav == 'contact' %} active{% endif %}">
+                    <a href="{{ path('app_landing_contact') }}" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_customer_booking_index') }}#rv-packages" class="nav-link">Book a trip</a>
+                </li>
+                <li class="nav-item">
+                    <a
+                        href="#"
+                        class="nav-link pr-2"
+                        id="reservue-signup-trigger"
+                        data-toggle="modal"
+                        data-target="#reservueRegisterModal"
+                    >Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a
+                        href="#"
+                        class="nav-link"
+                        id="reservue-signin-trigger"
+                        data-toggle="modal"
+                        data-target="#reservueLoginModal"
+                    >Log in</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

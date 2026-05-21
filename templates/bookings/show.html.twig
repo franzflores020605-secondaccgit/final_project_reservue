@@ -1,325 +1,89 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Booking Details{% endblock %}
+{% block title %}Booking request {{ booking.referenceCode }}{% endblock %}
 
-{% block stylesheets %}
-<style>
-    /* ===== COLOR SCHEME =====
-     * Primary Brown: #6B5B4D
-     * Dark Brown: #4A3F35
-     * Light Brown: #8B7968
-     * Accent Brown: #9B826F
-     * Light Grey: #F5F5F5
-     * Medium Grey: #E8E8E8
-     * Dark Grey: #7A7A7A
-     */
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #F5F5F5;
-        color: #333;
-    }
-
-    /* ===== DASHBOARD CONTAINER ===== */
-    .dashboard-container {
-        display: flex;
-        min-height: 100vh;
-    }
-
-    /* ===== SIDEBAR ===== */
-    .sidebar {
-        width: 260px;
-        background: linear-gradient(180deg, #6B5B4D 0%, #4A3F35 100%);
-        color: white;
-        padding: 20px 0;
-        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-        position: fixed;
-        height: 100vh;
-        overflow-y: auto;
-    }
-
-    .sidebar-logo {
-        padding: 20px;
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 30px;
-    }
-
-    .logo-img {
-        width: 120px;
-        height: auto;
-        margin-bottom: 10px;
-    }
-
-    .sidebar-logo p {
-        color: #E8E8E8;
-        font-size: 14px;
-        font-weight: 300;
-        letter-spacing: 1px;
-    }
-
-    .sidebar-menu {
-        list-style: none;
-        padding: 0 15px;
-    }
-
-    .sidebar-menu li {
-        margin-bottom: 5px;
-    }
-
-    .sidebar-menu a {
-        display: flex;
-        align-items: center;
-        padding: 12px 15px;
-        color: #E8E8E8;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        font-size: 15px;
-    }
-
-    .sidebar-menu a:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        padding-left: 20px;
-    }
-
-    .sidebar-menu a.active {
-        background-color: #9B826F;
-        color: white;
-        font-weight: 500;
-    }
-
-    .sidebar-menu .icon {
-        font-size: 18px;
-        margin-right: 12px;
-        width: 24px;
-        text-align: center;
-    }
-
-    /* ===== MAIN CONTENT ===== */
-    .main-content {
-        flex: 1;
-        margin-left: 260px;
-        padding: 30px;
-        background-color: #F5F5F5;
-    }
-
-    /* ======== BOOKING SHOW STYLING ======== */
-    .booking-show {
-        max-width: 800px;
-        margin: 0 auto;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        padding: 30px 40px;
-    }
-
-    h1 {
-        color: #4A3F35;
-        font-size: 1.8em;
-        margin-bottom: 25px;
-        text-align: center;
-        border-bottom: 2px solid #d7ccc8;
-        padding-bottom: 10px;
-    }
-
-    /* ======== DETAILS GRID ======== */
-    .booking-details {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        row-gap: 15px;
-        column-gap: 20px;
-        font-size: 15px;
-    }
-
-    .booking-details strong {
-        color: #4A3F35;
-        font-weight: 600;
-    }
-
-    .booking-details div {
-        padding: 6px 0;
-    }
-
-    /* ======== BUTTONS ======== */
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    a.btn, button.btn {
-        background-color: #6B5B4D;
-        color: #fff;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 0.95em;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    a.btn:hover, button.btn:hover {
-        background-color: #4A3F35;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(107, 91, 77, 0.3);
-    }
-
-    a.btn-secondary {
-        background-color: #d7ccc8;
-        color: #3b2f2f;
-    }
-
-    a.btn-secondary:hover {
-        background-color: #bca89f;
-    }
-
-    /* ======== STATUS BADGES ======== */
-    .badge {
-        padding: 6px 12px;
-        border-radius: 12px;
-        font-size: 0.85em;
-        font-weight: 600;
-        text-transform: capitalize;
-        display: inline-block;
-    }
-
-    .badge-pending {
-        background-color: #ffecb3;
-        color: #795548;
-    }
-
-    .badge-confirmed {
-        background-color: #c8e6c9;
-        color: #2e7d32;
-    }
-
-    .badge-cancelled {
-        background-color: #ffcdd2;
-        color: #b71c1c;
-    }
-
-    .badge-completed {
-        background-color: #b3e5fc;
-        color: #01579b;
-    }
-
-    /* ======== SMALL TEXT ======== */
-    .muted {
-        color: #8b7e74;
-        font-size: 0.9em;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-        .sidebar {
-            width: 70px;
-        }
-
-        .main-content {
-            margin-left: 70px;
-            padding: 15px;
-        }
-
-        .sidebar-logo p,
-        .sidebar-menu a span:not(.icon) {
-            display: none;
-        }
-
-        .sidebar-menu a {
-            justify-content: center;
-            padding: 12px;
-        }
-
-        .booking-show {
-            padding: 20px;
-        }
-
-        .booking-details {
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .actions {
-            flex-direction: column;
-        }
-
-        a.btn, button.btn {
-            width: 100%;
-            text-align: center;
-        }
-    }
-</style>
-{% endblock %}
-
-{% block body %}
-<div class="dashboard-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <img src="/images/logo_white.png" alt="Reservue Logo" class="logo-img">
-            <p>Admin Dashboard</p>
-        </div>
-
-        <ul class="sidebar-menu">
-            <li><a href="{{ path('app_dashboard') }}"><span class="icon">📊</span>Dashboard</a></li>
-            <li><a href="{{ path('app_product_index') }}"><span class="icon">📦</span>Product Inventory</a></li>
-            <li><a href="{{ path('app_bookings_index') }}" class="active"><span class="icon">🎫</span>Bookings</a></li>
-            <li><a href="{{ path('app_category_index') }}"><span class="icon">📁</span>Categories</a></li>
-        </ul>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
+{% block dashboard_body %}
+        {% set status_locked = booking.status.value in ['completed', 'cancelled'] %}
         <div class="booking-show">
-            <h1>Booking Details</h1>
+            <h1>Booking request</h1>
 
             <div class="booking-details">
-                <div><strong>Id:</strong></div>
-                <div>{{ booking.id }}</div>
+                <div><strong>Reference:</strong></div>
+                <div>{{ booking.referenceCode }}</div>
 
-                <div><strong>Booking ID:</strong></div>
-                <div>{{ booking.bookingId }}</div>
-
-                <div><strong>Booking Code:</strong></div>
-                <div>{{ booking.bookingCode }}</div>
-
-                <div><strong>Booking Date:</strong></div>
-                <div>{{ booking.bookingDate ? booking.bookingDate|date('Y-m-d H:i:s T') : '' }}</div>
+                <div><strong>Submitted:</strong></div>
+                <div>{{ booking.createdAt ? booking.createdAt|date('Y-m-d H:i:s T') : '—' }}</div>
 
                 <div><strong>Status:</strong></div>
                 <div>
-                    {% if booking.bookingStatus %}
-                        {% set status = booking.bookingStatus.value|lower %}
-                        <span class="badge badge-{{ status }}">{{ booking.bookingStatus.value }}</span>
-                    {% else %}
-                        <span class="muted">No status</span>
+                    {% set st = booking.status.value %}
+                    {% set badge_class = st == 'completed' ? 'badge-booking-completed' : (st == 'cancelled' ? 'badge-booking-cancelled' : 'badge-booking-pending') %}
+                    <span class="{{ badge_class }}">{{ st|capitalize }}</span>
+                    {% if status_locked %}
+                        <p class="muted" style="margin:0.35rem 0 0;">This booking is finalised — status can no longer be changed.</p>
                     {% endif %}
                 </div>
 
-                <div><strong>Booking Type:</strong></div>
-                <div>{{ booking.bookingType }}</div>
+                <div><strong>Type:</strong></div>
+                <div>{{ booking.bookingKind|capitalize }}</div>
+
+                <div><strong>Booked item:</strong></div>
+                <div>{{ booking.displayTitle }}</div>
+
+                <div><strong>Travel date:</strong></div>
+                <div>{{ booking.travelDate ? booking.travelDate|date('Y-m-d') : '—' }}</div>
+
+                <div><strong>Number of travelers:</strong></div>
+                <div>{{ booking.numberOfTravelers }}</div>
+
+                <div><strong>Estimated total:</strong></div>
+                <div>₱{{ booking.estimatedTotal|number_format(2, '.', ',') }}</div>
+
+                <div><strong>Catalog inventory:</strong></div>
+                <div class="muted" style="max-width:42rem;">
+                    {% if booking.inventoryDeducted %}
+                        {% if booking.bookedProduct %}
+                            Stock for <strong>{{ booking.bookedProduct.name }}</strong> was reduced by <strong>{{ booking.numberOfTravelers }}</strong> unit(s) when this request was submitted (see <a href="{{ path('app_product_index') }}">My products</a>).
+                        {% elseif booking.travelPackage and booking.travelPackage.products|length > 0 %}
+                            Linked product stock was reduced by <strong>{{ booking.numberOfTravelers }}</strong> unit(s) per included item when this request was submitted (see <a href="{{ path('app_product_index') }}">My products</a>).
+                        {% else %}
+                            Product inventory was adjusted for this booking.
+                        {% endif %}
+                    {% elseif booking.travelPackage and booking.travelPackage.products|length > 0 or booking.bookedProduct %}
+                        No active deduction for this row (for example, stock was restored after cancellation).
+                    {% else %}
+                        This booking has no linked catalog items, so product inventory was not changed.
+                    {% endif %}
+                </div>
+
+                <div><strong>Contact:</strong></div>
+                <div>
+                    {{ booking.contactDisplayName }}<br>
+                    <a href="mailto:{{ booking.contactEmail }}">{{ booking.contactEmail }}</a>
+                    {% if booking.contactPhone %}<br>{{ booking.contactPhone }}{% endif %}
+                    {% if booking.contactPassportNumber %}
+                        <br><span class="muted">Passport:</span> {{ booking.contactPassportNumber }}
+                    {% endif %}
+                    {% if booking.leadTraveler %}
+                        <br><span class="muted">Traveler record:</span>
+                        <a href="{{ path('app_traveler_show', { id: booking.leadTraveler.id }) }}">#{{ booking.leadTraveler.id }}</a>
+                    {% endif %}
+                </div>
+
+                {% if booking.specialRequests %}
+                    <div><strong>Notes &amp; add-ons:</strong></div>
+                    <div style="white-space:pre-wrap;">{{ booking.specialRequests }}</div>
+                {% endif %}
             </div>
 
-            <div class="actions">
-                <a href="{{ path('app_bookings_index') }}" class="btn btn-secondary">← Back to List</a>
-                <a href="{{ path('app_bookings_edit', {'id': booking.id}) }}" class="btn">✎ Edit</a>
-            </div>
-
-            <div style="margin-top: 15px;">
-                {{ include('bookings/_delete_form.html.twig') }}
+            <div class="actions" style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+                <a href="{{ path('app_bookings_index') }}" class="btn btn-secondary">← Back to list</a>
+                {% if not status_locked %}
+                <a href="{{ path('app_bookings_edit', {'id': booking.id}) }}" class="btn">Edit status</a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    {{ include('bookings/_delete_form.html.twig') }}
+                {% endif %}
             </div>
         </div>
-    </main>
-</div>
 {% endblock %}

@@ -1,0 +1,46 @@
+<section class="ftco-section bg-light" id="contact">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8 text-center heading-section ftco-animate">
+                <h2 class="mb-4" style="color: var(--reservue-brown);">Get in touch</h2>
+                <p style="color: rgba(0,0,0,0.65);">We would love to hear from you. Reach us using the details below or visit our office.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="bg-white p-5 rounded shadow-sm ftco-animate">
+                    <div class="row">
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <h4 class="mb-3" style="color: var(--reservue-brown);">Address</h4>
+                            <p class="mb-0" style="color: rgba(0,0,0,0.7);">E.J. Blanco St, Dumaguete City, Negros Oriental, Philippines, 6200</p>
+                        </div>
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <h4 class="mb-3" style="color: var(--reservue-brown);">Phone</h4>
+                            <p class="mb-0"><a href="tel:+1234567890" style="color: var(--reservue-brown);">+1 234 567 890</a></p>
+                        </div>
+                        <div class="col-md-4">
+                            <h4 class="mb-3" style="color: var(--reservue-brown);">Email</h4>
+                            <p class="mb-0"><a href="mailto:reservue9@gmail.com" style="color: var(--reservue-brown);">reservue9@gmail.com</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if load_contact_form_assets|default(false) and contact_form_csrf|default('') %}
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8 col-md-10">
+                <div class="bg-white p-4 p-md-5 rounded shadow-sm ftco-animate">
+                    <h3 class="mb-2 text-center" style="color: var(--reservue-brown); font-family: 'Abril Fatface', Georgia, serif;">Send us a message</h3>
+                    <p class="text-center mb-4" style="color: rgba(0,0,0,0.6); font-size: 0.95rem;">Powered by Brevo — we’ll reply to the email you provide.</p>
+                    <div
+                        data-reservue-contact-root
+                        data-api-url="{{ path('app_contact_brevo_submit') }}"
+                        data-csrf-token="{{ contact_form_csrf }}"
+                    ></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>

@@ -1,0 +1,80 @@
+<script src="{{ asset('advanture-2/js/jquery.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/jquery-migrate-3.0.1.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/popper.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/jquery.easing.1.3.js') }}"></script>
+<script src="{{ asset('advanture-2/js/jquery.waypoints.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/jquery.stellar.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/jquery.magnific-popup.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/aos.js') }}"></script>
+<script src="{{ asset('advanture-2/js/jquery.animateNumber.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/bootstrap-datepicker.js') }}"></script>
+<script src="{{ asset('advanture-2/js/scrollax.min.js') }}"></script>
+<script src="{{ asset('advanture-2/js/google-map.js') }}"></script>
+<script src="{{ asset('advanture-2/js/main.js') }}"></script>
+{% if landing_enable_scroll_spy|default(false) %}
+    {% include 'landing_page/_scroll_spy.html.twig' %}
+{% endif %}
+{% if open_login_modal|default(false) %}
+<script>
+    jQuery(function ($) {
+        $('#reservueLoginModal').modal('show');
+    });
+</script>
+{% endif %}
+{% if open_register_modal|default(false) %}
+<script>
+    jQuery(function ($) {
+        $('#reservueRegisterModal').modal('show');
+    });
+</script>
+{% endif %}
+<script>
+    jQuery(function ($) {
+        $('#reservue-signin-trigger, #reservue-signup-trigger').on('click', function () {
+            $('#ftco-nav').collapse('hide');
+        });
+
+        // Landing hero search should jump to packages section on /book.
+        $(document).on('submit', 'form[data-rv-book-search]', function () {
+            try {
+                var action = this.getAttribute('action') || '';
+                if (action && action.indexOf('#') === -1) {
+                    this.setAttribute('action', action + '#rv-packages');
+                }
+            } catch (e) {
+                // no-op
+            }
+        });
+
+        $('#reservueLoginModal').on('shown.bs.modal', function () {
+            if (window.location.search.indexOf('signin=') !== -1) {
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        });
+        $('#reservueRegisterModal').on('shown.bs.modal', function () {
+            if (window.location.search.indexOf('register=') !== -1) {
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        });
+
+        $(document).on('click', '.reservue-switch-to-register', function (e) {
+            e.preventDefault();
+            $('#reservueLoginModal').modal('hide');
+            $('#reservueLoginModal').one('hidden.bs.modal', function () {
+                $('#reservueRegisterModal').modal('show');
+            });
+        });
+        $(document).on('click', '.reservue-switch-to-login', function (e) {
+            e.preventDefault();
+            $('#reservueRegisterModal').modal('hide');
+            $('#reservueRegisterModal').one('hidden.bs.modal', function () {
+                $('#reservueLoginModal').modal('show');
+            });
+        });
+    });
+</script>
+{% if load_contact_form_assets|default(false) %}
+    {{ encore_entry_script_tags('contact_form') }}
+{% endif %}

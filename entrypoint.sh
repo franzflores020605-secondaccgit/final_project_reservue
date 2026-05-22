@@ -1,6 +1,22 @@
 #!/bin/bash
 set -e
 
+# Warn in deploy logs when auth/email env vars are missing (common Railway setup gap)
+if [ -z "${GOOGLE_CLIENT_ID:-}" ]; then
+    echo "WARNING: GOOGLE_CLIENT_ID is not set — Google Sign-In will fail (Missing client_id)."
+fi
+if [ -z "${GOOGLE_CLIENT_SECRET:-}" ]; then
+    echo "WARNING: GOOGLE_CLIENT_SECRET is not set — Google Sign-In will fail."
+fi
+if [ -z "${GOOGLE_REDIRECT_URI:-}" ]; then
+    echo "WARNING: GOOGLE_REDIRECT_URI is not set — Google Sign-In may fail (redirect_uri_mismatch)."
+fi
+if [ -z "${MAILER_DSN:-}" ] || [ "$MAILER_DSN" = "null://null" ]; then
+    if [ -z "${BREVO_API_KEY:-}" ]; then
+        echo "WARNING: MAILER_DSN and BREVO_API_KEY are not set — contact/verification email may not work."
+    fi
+fi
+
 # Run production migrations automatically — capture stderr so failures are visible
 echo "Running database migrations..."
 MIGRATION_OUTPUT=$(php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1) || {

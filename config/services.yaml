@@ -39,5 +39,9 @@ services:
             $senderEmail: '%env(BREVO_SENDER_EMAIL)%'
             $senderName: '%env(BREVO_SENDER_NAME)%'
 
+    App\EventSubscriber\DefaultUriRequestContextSubscriber:
+        arguments:
+            $defaultUri: '%env(DEFAULT_URI)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

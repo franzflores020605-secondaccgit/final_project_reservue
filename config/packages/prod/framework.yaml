@@ -1,0 +1,6 @@
+# Railway / reverse-proxy: HTTPS URLs and OAuth redirects must use X-Forwarded-* headers.
+framework:
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+    router:
+        default_uri: '%env(DEFAULT_URI)%'

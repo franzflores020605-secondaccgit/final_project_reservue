@@ -1,4 +1,4 @@
-FROM php:8.3-fpm as builder
+FROM php:8.3-fpm AS builder
 
 WORKDIR /app
 
@@ -33,7 +33,7 @@ RUN php bin/console importmap:install --no-interaction
 
 RUN php bin/console cache:warmup --env=prod --no-debug || true
 
-FROM php:8.3-fpm as runtime
+FROM php:8.3-fpm AS runtime
 
 WORKDIR /app
 

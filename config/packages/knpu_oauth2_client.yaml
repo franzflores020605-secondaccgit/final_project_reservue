@@ -5,5 +5,4 @@ knpu_oauth2_client:
             type: google
             client_id: '%env(GOOGLE_CLIENT_ID)%'
             client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
-            # Must match Google Cloud Console → Authorized redirect URIs exactly
-            redirect_uri: '%env(GOOGLE_REDIRECT_URI)%'
+            redirect_route: connect_google_check

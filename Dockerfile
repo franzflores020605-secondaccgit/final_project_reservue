@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     nodejs \
     npm \
-    && docker-php-ext-install pdo pdo_mysql \
+    && docker-php-ext-install pdo pdo_mysql intl \
     && rm -rf /var/lib/apt/lists/*
 
 # THE FIX: We bypass curl entirely and copy the pre-compiled binary
@@ -40,7 +40,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     nginx \
     curl \
-    && docker-php-ext-install pdo pdo_mysql \
+    && docker-php-ext-install pdo pdo_mysql intl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app /app

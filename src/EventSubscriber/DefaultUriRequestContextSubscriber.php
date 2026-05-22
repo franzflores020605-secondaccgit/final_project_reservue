@@ -8,14 +8,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Ensures generated URLs (e.g. Google OAuth redirect_uri) use DEFAULT_URI on Railway,
- * not an internal/wrong host from the reverse proxy.
+ * Forces the router host/scheme for OAuth redirect URLs on Railway.
+ * Uses GOOGLE_REDIRECT_URI when set, otherwise DEFAULT_URI (must be your public https URL).
  */
 final class DefaultUriRequestContextSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly RouterInterface $router,
         private readonly string $defaultUri,
+        private readonly string $googleRedirectUri = '',
     ) {
     }
 
@@ -30,12 +31,17 @@ final class DefaultUriRequestContextSubscriber implements EventSubscriberInterfa
             return;
         }
 
-        $defaultUri = trim($this->defaultUri);
-        if ($defaultUri === '' || str_contains($defaultUri, 'localhost')) {
+        $baseUri = trim($this->googleRedirectUri) !== '' ? trim($this->googleRedirectUri) : trim($this->defaultUri);
+        if ($baseUri === '') {
             return;
         }
 
-        $parts = parse_url($defaultUri);
+        // Skip only when we would force localhost without an explicit Google redirect URI
+        if (str_contains($baseUri, 'localhost') && trim($this->googleRedirectUri) === '') {
+            return;
+        }
+
+        $parts = parse_url($baseUri);
         if (!\is_array($parts) || empty($parts['host'])) {
             return;
         }
@@ -51,6 +57,8 @@ final class DefaultUriRequestContextSubscriber implements EventSubscriberInterfa
             } else {
                 $context->setHttpPort((int) $parts['port']);
             }
+        } elseif ($scheme === 'https') {
+            $context->setHttpsPort(443);
         }
     }
 }

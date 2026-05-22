@@ -42,6 +42,7 @@ services:
     App\EventSubscriber\DefaultUriRequestContextSubscriber:
         arguments:
             $defaultUri: '%env(DEFAULT_URI)%'
+            $googleRedirectUri: '%env(GOOGLE_REDIRECT_URI)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

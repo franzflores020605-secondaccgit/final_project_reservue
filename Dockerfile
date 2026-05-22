@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     nodejs \
     npm \
+    libicu-dev \
     && docker-php-ext-install pdo pdo_mysql intl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -40,6 +41,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     nginx \
     curl \
+    libicu-dev \
     && docker-php-ext-install pdo pdo_mysql intl \
     && rm -rf /var/lib/apt/lists/*
 

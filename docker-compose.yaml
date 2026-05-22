@@ -14,6 +14,26 @@ services:
       networks:
       - flores_reservue_network
 
+
+    app:
+     build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reservue_app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - app_var:/var/www/html/var
+    networks:
+    - flores_reservue_network
+    depends_on:
+      - mysql
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.0&charset=utf8mb4"
+    ports:
+      - "8000:80"
     
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -34,3 +54,4 @@ volumes:
 
 networks:
  flores_reservue_network:
+

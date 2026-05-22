@@ -36,6 +36,11 @@ Railway → **successful-bravery** (app, not MySQL) → **Variables** → add:
 | `DEFAULT_URI` | `https://YOUR-APP.up.railway.app` (no trailing slash) |
 | `APP_SECRET` | Long random string |
 | `DATABASE_URL` | Reference from MySQL service (if not already linked) |
+| `JWT_PASSPHRASE` | Same value as local `.env` (e.g. from `JWT_PASSPHRASE=` line) — **required** for login & Google on mobile |
+| `JWT_SECRET_KEY` | `%kernel.project_dir%/config/jwt/private.pem` |
+| `JWT_PUBLIC_KEY` | `%kernel.project_dir%/config/jwt/public.pem` |
+
+On deploy, `entrypoint.sh` runs `lexik:jwt:generate-keypair` if `.pem` files are missing (they are not in git).
 
 Redeploy the app after saving variables.
 

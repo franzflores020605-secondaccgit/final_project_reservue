@@ -58,6 +58,7 @@ final class MobileBookingController extends AbstractController
         }
 
         return $this->json($this->ok([
+            'id' => $booking->getId(),
             'referenceCode' => $result['referenceCode'],
             'message' => sprintf(
                 'Thank you! Your request is submitted. Reference: %s. Our team will confirm soon.',

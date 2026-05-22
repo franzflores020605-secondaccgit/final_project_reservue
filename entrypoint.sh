@@ -3,7 +3,10 @@ set -e
 
 # Warn in deploy logs when auth/email env vars are missing (common Railway setup gap)
 if [ -z "${GOOGLE_CLIENT_ID:-}" ]; then
-    echo "WARNING: GOOGLE_CLIENT_ID is not set — Google Sign-In will fail (Missing client_id)."
+    echo "WARNING: GOOGLE_CLIENT_ID is not set — website Google OAuth may fail; mobile app uses built-in client IDs."
+fi
+if [ -z "${JWT_PASSPHRASE:-}" ]; then
+    echo "WARNING: JWT_PASSPHRASE is not set — JWT key generation and login tokens may fail."
 fi
 if [ -z "${GOOGLE_CLIENT_SECRET:-}" ]; then
     echo "WARNING: GOOGLE_CLIENT_SECRET is not set — Google Sign-In will fail."
@@ -16,6 +19,12 @@ if [ -z "${MAILER_DSN:-}" ] || [ "$MAILER_DSN" = "null://null" ]; then
         echo "WARNING: MAILER_DSN and BREVO_API_KEY are not set — contact/verification email may not work."
     fi
 fi
+
+# JWT pem files are gitignored — generate on Railway/fresh deploy so /api/login and mobile Google auth work
+echo "Ensuring JWT keypair exists..."
+php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction 2>&1 || {
+    echo "WARNING: lexik:jwt:generate-keypair failed — set JWT_SECRET_KEY paths and JWT_PASSPHRASE on Railway."
+}
 
 # Run production migrations automatically — capture stderr so failures are visible
 echo "Running database migrations..."

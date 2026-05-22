@@ -65,6 +65,7 @@ security:
         - { path: ^/api/mobile/v1/my-bookings, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/mobile/v1/bookings, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/mobile/v1/me, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/mobile/v1/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/v1/auth/google, roles: PUBLIC_ACCESS }
         - { path: ^/api/mobile/v1/products, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }

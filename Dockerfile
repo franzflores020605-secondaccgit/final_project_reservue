@@ -27,11 +27,11 @@ RUN if [ ! -f /app/.env ]; then echo "APP_ENV=${APP_ENV:-prod}\nAPP_DEBUG=${APP_
 # Webpack Encore assets (entrypoints.json, manifest.json) — required by Twig in prod
 RUN npm ci && NODE_ENV=production npm run build
 
-# Now run post-install scripts after app code is available
-RUN composer install --no-interaction --optimize-autoloader --no-ansi || true
-RUN php bin/console importmap:install --no-interaction
+# Post-install scripts (assets:install, etc.) — Webpack Encore, not AssetMapper/importmap
+RUN composer install --no-interaction --optimize-autoloader --no-ansi
 
-RUN php bin/console cache:warmup --env=prod --no-debug || true
+RUN php bin/console assets:install public --env=prod --no-interaction
+RUN php bin/console cache:warmup --env=prod --no-debug
 
 FROM php:8.3-fpm AS runtime
 

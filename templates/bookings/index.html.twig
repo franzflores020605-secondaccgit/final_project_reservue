@@ -45,8 +45,7 @@
                                         <span class="{{ badge_class }}">{{ st|capitalize }}</span>
                                         <span style="display:block;font-size:0.75rem;color:var(--text-light,#888);margin-top:0.25rem;">Locked</span>
                                     {% else %}
-                                    {# Top-level Turbo visit: in-frame POST+redirect can yield “Content missing” if the response frame is not found #}
-                                    <form method="post" action="{{ path('app_bookings_quick_status', {id: booking.id}) }}" data-turbo-frame="_top" style="display:flex;flex-wrap:wrap;gap:0.4rem;align-items:center;">
+                                    <form method="post" action="{{ path('app_bookings_quick_status', {id: booking.id}) }}" data-turbo-frame="reservue-dashboard-outlet" style="display:flex;flex-wrap:wrap;gap:0.4rem;align-items:center;">
                                         <input type="hidden" name="_token" value="{{ csrf_token('status' ~ booking.id) }}">
                                         <label class="visually-hidden" for="booking-status-{{ booking.id }}">Status</label>
                                         <select id="booking-status-{{ booking.id }}" name="status" class="form-control" style="min-width:130px;font-size:0.85rem;padding:0.35rem 0.5rem;">

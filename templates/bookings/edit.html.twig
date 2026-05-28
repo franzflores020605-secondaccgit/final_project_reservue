@@ -15,7 +15,7 @@
                 <p class="crud-subtitle" style="margin:0 0 1.25rem;color:var(--rv-text-muted,#6b5d52);font-size:0.9rem;line-height:1.45;">
                     Reference <strong>{{ booking.referenceCode }}</strong> — {{ booking.travelPackage ? booking.travelPackage.name : 'Package' }}
                 </p>
-                {{ form_start(form, { attr: { 'data-turbo-frame': '_top' } }) }}
+                {{ form_start(form, { attr: { 'data-turbo-frame': 'reservue-dashboard-outlet' } }) }}
                     {{ form_row(form.status) }}
                     <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
                         <button type="submit" class="btn-new" style="border:none;cursor:pointer;">Save</button>

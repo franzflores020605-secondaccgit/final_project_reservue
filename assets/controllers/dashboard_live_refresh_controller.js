@@ -3,11 +3,29 @@ import { Controller } from '@hotwired/stimulus';
 const FRAME_ID = 'reservue-dashboard-outlet';
 const CHANNEL_NAME = 'reservue-workspace-v1';
 
+/** Index/list screens only — never edit or detail pages. */
+const LIST_PATHS = new Set([
+    '/bookings',
+    '/dashboard',
+    '/staff/dashboard',
+    '/product',
+    '/category',
+    '/travel-package',
+    '/traveler',
+    '/admin/users',
+    '/admin/logs',
+]);
+
 /**
- * Refreshes workspace lists after admin/staff save/delete — not on a timer.
- * Avoids interrupting edit forms (e.g. choosing a package photo).
+ * - After admin/staff save: Turbo redirect + optional cross-tab refresh.
+ * - On list pages only: light polling so new customer bookings appear without F5.
+ * - Never polls on edit/new (avoids interrupting file uploads).
  */
 export default class extends Controller {
+    static values = {
+        listPollInterval: { type: Number, default: 12000 },
+    };
+
     connect() {
         this._refreshing = false;
         this._channel =
@@ -20,9 +38,17 @@ export default class extends Controller {
 
         this._onSubmitEnd = (event) => this.handleSubmitEnd(event);
         document.addEventListener('turbo:submit-end', this._onSubmitEnd);
+
+        this._pollList = () => this.refreshOutlet('list-poll');
+        if (this.listPollIntervalValue > 0) {
+            this._pollTimer = window.setInterval(this._pollList, this.listPollIntervalValue);
+        }
     }
 
     disconnect() {
+        if (this._pollTimer) {
+            window.clearInterval(this._pollTimer);
+        }
         document.removeEventListener('turbo:submit-end', this._onSubmitEnd);
         if (this._channel) {
             this._channel.removeEventListener('message', this._onChannelMessage);
@@ -42,7 +68,6 @@ export default class extends Controller {
         }
 
         this.notifyMutation();
-        // Turbo follows the redirect into the outlet; no extra reload on this tab.
     }
 
     isWorkspaceMutation(form) {
@@ -66,9 +91,17 @@ export default class extends Controller {
         });
     }
 
+    normalizedPath() {
+        const path = window.location.pathname.replace(/\/+$/, '');
+        return path === '' ? '/' : path;
+    }
+
+    isListScreen() {
+        return LIST_PATHS.has(this.normalizedPath());
+    }
+
     isEditingScreen() {
-        const path = window.location.pathname;
-        return /\/(new|edit)(\/|$)/.test(path);
+        return /\/(new|edit)$/.test(this.normalizedPath());
     }
 
     hasActiveFormWork() {
@@ -89,11 +122,19 @@ export default class extends Controller {
     }
 
     refreshOutlet(reason) {
-        if (this._refreshing || reason !== 'broadcast') {
+        if (this._refreshing) {
             return;
         }
 
-        if (this.isEditingScreen() || this.hasActiveFormWork()) {
+        if (reason === 'list-poll') {
+            if (!this.isListScreen() || this.isEditingScreen() || this.hasActiveFormWork()) {
+                return;
+            }
+        } else if (reason === 'broadcast') {
+            if (this.isEditingScreen() || this.hasActiveFormWork()) {
+                return;
+            }
+        } else {
             return;
         }
 

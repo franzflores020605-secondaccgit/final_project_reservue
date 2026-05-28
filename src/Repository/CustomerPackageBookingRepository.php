@@ -120,4 +120,27 @@ class CustomerPackageBookingRepository extends ServiceEntityRepository
 
         return (int) $v;
     }
+
+    /**
+     * Lightweight snapshot for the admin bookings list live-update check.
+     *
+     * @return array{total: int, latestId: int, latestAt: string|null}
+     */
+    public function getAdminListSyncSnapshot(): array
+    {
+        $row = $this->createQueryBuilder('b')
+            ->select('COUNT(b.id) AS total', 'MAX(b.id) AS latestId', 'MAX(b.createdAt) AS latestAt')
+            ->getQuery()
+            ->getSingleResult();
+
+        $latestAt = $row['latestAt'] ?? null;
+
+        return [
+            'total' => (int) ($row['total'] ?? 0),
+            'latestId' => (int) ($row['latestId'] ?? 0),
+            'latestAt' => $latestAt instanceof \DateTimeInterface
+                ? $latestAt->format(\DateTimeInterface::ATOM)
+                : null,
+        ];
+    }
 }

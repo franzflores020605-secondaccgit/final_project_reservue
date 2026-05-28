@@ -11,6 +11,7 @@ use App\Service\PackageBookingInventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -31,6 +32,12 @@ final class BookingsController extends AbstractController
         return $this->render('bookings/index.html.twig', [
             'bookings' => $bookings,
         ]);
+    }
+
+    #[Route('/sync-check', name: 'app_bookings_sync_check', methods: ['GET'])]
+    public function syncCheck(CustomerPackageBookingRepository $customerPackageBookingRepository): JsonResponse
+    {
+        return $this->json($customerPackageBookingRepository->getAdminListSyncSnapshot());
     }
 
     #[Route('/{id}', name: 'app_bookings_show', methods: ['GET'], requirements: ['id' => '\d+'])]

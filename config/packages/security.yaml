@@ -15,6 +15,12 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # Public mobile catalog (no JWT — invalid Bearer must not block browsing)
+        api_mobile_catalog:
+            pattern: ^/api/mobile/v1/(traveler-packages|products)$
+            stateless: true
+            security: false
+
         # Firewall for API Platform routes
         api_platform:
             pattern: ^/api

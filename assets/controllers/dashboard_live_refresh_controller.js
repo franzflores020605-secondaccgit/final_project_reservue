@@ -3,52 +3,26 @@ import { Controller } from '@hotwired/stimulus';
 const FRAME_ID = 'reservue-dashboard-outlet';
 const CHANNEL_NAME = 'reservue-workspace-v1';
 
-/** Index/list screens only — never edit or detail pages. */
-const LIST_PATHS = new Set([
-    '/bookings',
-    '/dashboard',
-    '/staff/dashboard',
-    '/product',
-    '/category',
-    '/travel-package',
-    '/traveler',
-    '/admin/users',
-    '/admin/logs',
-]);
-
 /**
- * - After admin/staff save: Turbo redirect + optional cross-tab refresh.
- * - On list pages only: light polling so new customer bookings appear without F5.
- * - Never polls on edit/new (avoids interrupting file uploads).
+ * Refreshes other workspace tabs after admin/staff save/delete.
+ * No timer polling — bookings list uses bookings-live-watch instead.
  */
 export default class extends Controller {
-    static values = {
-        listPollInterval: { type: Number, default: 12000 },
-    };
-
     connect() {
         this._refreshing = false;
         this._channel =
             typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(CHANNEL_NAME) : null;
 
-        this._onChannelMessage = () => this.refreshOutlet('broadcast');
+        this._onChannelMessage = () => this.refreshOutlet();
         if (this._channel) {
             this._channel.addEventListener('message', this._onChannelMessage);
         }
 
         this._onSubmitEnd = (event) => this.handleSubmitEnd(event);
         document.addEventListener('turbo:submit-end', this._onSubmitEnd);
-
-        this._pollList = () => this.refreshOutlet('list-poll');
-        if (this.listPollIntervalValue > 0) {
-            this._pollTimer = window.setInterval(this._pollList, this.listPollIntervalValue);
-        }
     }
 
     disconnect() {
-        if (this._pollTimer) {
-            window.clearInterval(this._pollTimer);
-        }
         document.removeEventListener('turbo:submit-end', this._onSubmitEnd);
         if (this._channel) {
             this._channel.removeEventListener('message', this._onChannelMessage);
@@ -91,17 +65,9 @@ export default class extends Controller {
         });
     }
 
-    normalizedPath() {
-        const path = window.location.pathname.replace(/\/+$/, '');
-        return path === '' ? '/' : path;
-    }
-
-    isListScreen() {
-        return LIST_PATHS.has(this.normalizedPath());
-    }
-
     isEditingScreen() {
-        return /\/(new|edit)$/.test(this.normalizedPath());
+        const path = window.location.pathname.replace(/\/+$/, '');
+        return /\/(new|edit)$/.test(path);
     }
 
     hasActiveFormWork() {
@@ -121,20 +87,8 @@ export default class extends Controller {
         return false;
     }
 
-    refreshOutlet(reason) {
-        if (this._refreshing) {
-            return;
-        }
-
-        if (reason === 'list-poll') {
-            if (!this.isListScreen() || this.isEditingScreen() || this.hasActiveFormWork()) {
-                return;
-            }
-        } else if (reason === 'broadcast') {
-            if (this.isEditingScreen() || this.hasActiveFormWork()) {
-                return;
-            }
-        } else {
+    refreshOutlet() {
+        if (this._refreshing || this.isEditingScreen() || this.hasActiveFormWork()) {
             return;
         }
 

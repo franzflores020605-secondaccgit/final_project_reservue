@@ -4,14 +4,10 @@ const FRAME_ID = 'reservue-dashboard-outlet';
 const CHANNEL_NAME = 'reservue-workspace-v1';
 
 /**
- * Keeps the admin/staff workspace outlet in sync: polls for new data (e.g. customer
- * bookings) and refreshes after POST mutations without a full browser reload.
+ * Refreshes workspace lists after admin/staff save/delete — not on a timer.
+ * Avoids interrupting edit forms (e.g. choosing a package photo).
  */
 export default class extends Controller {
-    static values = {
-        pollInterval: { type: Number, default: 8000 },
-    };
-
     connect() {
         this._refreshing = false;
         this._channel =
@@ -24,17 +20,9 @@ export default class extends Controller {
 
         this._onSubmitEnd = (event) => this.handleSubmitEnd(event);
         document.addEventListener('turbo:submit-end', this._onSubmitEnd);
-
-        this._pollTimer = window.setInterval(
-            () => this.refreshOutlet('poll'),
-            this.pollIntervalValue
-        );
     }
 
     disconnect() {
-        if (this._pollTimer) {
-            window.clearInterval(this._pollTimer);
-        }
         document.removeEventListener('turbo:submit-end', this._onSubmitEnd);
         if (this._channel) {
             this._channel.removeEventListener('message', this._onChannelMessage);
@@ -54,7 +42,7 @@ export default class extends Controller {
         }
 
         this.notifyMutation();
-        window.setTimeout(() => this.refreshOutlet('submit'), 80);
+        // Turbo follows the redirect into the outlet; no extra reload on this tab.
     }
 
     isWorkspaceMutation(form) {
@@ -78,45 +66,56 @@ export default class extends Controller {
         });
     }
 
+    isEditingScreen() {
+        const path = window.location.pathname;
+        return /\/(new|edit)(\/|$)/.test(path);
+    }
+
+    hasActiveFormWork() {
+        const frame = document.getElementById(FRAME_ID);
+        if (!frame) {
+            return false;
+        }
+        if (frame.querySelector('input:focus, select:focus, textarea:focus')) {
+            return true;
+        }
+        const fileInputs = frame.querySelectorAll('input[type="file"]');
+        for (const input of fileInputs) {
+            if (input.files && input.files.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     refreshOutlet(reason) {
-        if (this._refreshing) {
+        if (this._refreshing || reason !== 'broadcast') {
+            return;
+        }
+
+        if (this.isEditingScreen() || this.hasActiveFormWork()) {
             return;
         }
 
         const frame = document.getElementById(FRAME_ID);
-        if (!frame) {
+        if (!frame || frame.hasAttribute('busy')) {
             return;
         }
 
-        if (frame.hasAttribute('busy')) {
+        if (typeof frame.reload !== 'function') {
             return;
         }
 
-        if (frame.querySelector('input:focus, select:focus, textarea:focus')) {
-            return;
+        this._refreshing = true;
+        const done = () => {
+            this._refreshing = false;
+        };
+        frame.addEventListener('turbo:frame-load', done, { once: true });
+        frame.addEventListener('turbo:frame-missing', done, { once: true });
+        try {
+            frame.reload();
+        } catch (e) {
+            done();
         }
-
-        if (typeof frame.reload === 'function') {
-            this._refreshing = true;
-            const done = () => {
-                this._refreshing = false;
-            };
-            frame.addEventListener('turbo:frame-load', done, { once: true });
-            frame.addEventListener('turbo:frame-missing', done, { once: true });
-            try {
-                frame.reload();
-            } catch (e) {
-                done();
-            }
-            return;
-        }
-
-        if (reason === 'poll') {
-            return;
-        }
-
-        const url = new URL(window.location.href);
-        url.searchParams.set('_rv', String(Date.now()));
-        frame.src = url.pathname + url.search;
     }
 }

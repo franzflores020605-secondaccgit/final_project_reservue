@@ -3,12 +3,9 @@
 {% block title %}Bookings{% endblock %}
 
 {% block dashboard_body %}
-        {% set latest_booking_id = bookings|length > 0 ? (bookings|last).id : 0 %}
         <div class="crud-container"
-             data-controller="bookings-live-watch"
-             data-bookings-live-watch-check-url-value="{{ path('app_bookings_sync_check') }}"
-             data-bookings-live-watch-total-value="{{ bookings|length }}"
-             data-bookings-live-watch-latest-id-value="{{ latest_booking_id }}">
+             data-controller="workspace-live-watch"
+             data-workspace-live-watch-check-url-value="{{ path('app_workspace_sync_check', { scope: 'bookings' }) }}">
             <div class="crud-header">
                 <h1>
                     <span class="header-icon" aria-hidden="true">🎫</span>

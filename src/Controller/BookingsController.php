@@ -34,12 +34,6 @@ final class BookingsController extends AbstractController
         ]);
     }
 
-    #[Route('/sync-check', name: 'app_bookings_sync_check', methods: ['GET'])]
-    public function syncCheck(CustomerPackageBookingRepository $customerPackageBookingRepository): JsonResponse
-    {
-        return $this->json($customerPackageBookingRepository->getAdminListSyncSnapshot());
-    }
-
     #[Route('/{id}', name: 'app_bookings_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(CustomerPackageBooking $customerPackageBooking): Response
     {

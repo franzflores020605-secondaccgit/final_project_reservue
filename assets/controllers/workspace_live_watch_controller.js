@@ -1,24 +1,21 @@
 import { Controller } from '@hotwired/stimulus';
 
 const FRAME_ID = 'reservue-dashboard-outlet';
-/** How often to check for new customer bookings (tiny JSON request — no full reload unless something changed). */
+/** Check interval — only reloads when data actually changed (not a blind refresh). */
 const CHECK_MS = 20000;
 
 /**
- * On the Bookings list only: detect new customer bookings and reload the table once.
+ * Watches a sync-check URL; reloads the outlet (or fires an event) when fingerprint changes.
+ * Used on dashboard, bookings, audit logs, and entity list pages.
  */
 export default class extends Controller {
     static values = {
         checkUrl: String,
-        total: { type: Number, default: 0 },
-        latestId: { type: Number, default: 0 },
+        refreshEvent: String,
     };
 
     connect() {
-        this._snapshot = {
-            total: this.totalValue,
-            latestId: this.latestIdValue,
-        };
+        this._snapshot = null;
         this._onVisibility = () => {
             if (document.visibilityState === 'visible') {
                 this.checkForUpdates();
@@ -26,6 +23,7 @@ export default class extends Controller {
         };
         this._timer = window.setInterval(() => this.checkForUpdates(), CHECK_MS);
         document.addEventListener('visibilitychange', this._onVisibility);
+        this.checkForUpdates();
     }
 
     disconnect() {
@@ -55,23 +53,31 @@ export default class extends Controller {
                 return;
             }
             const data = await response.json();
-            const total = Number(data.total) || 0;
-            const latestId = Number(data.latestId) || 0;
+            const fingerprint = String(data.fingerprint ?? '');
 
-            if (
-                total === this._snapshot.total &&
-                latestId === this._snapshot.latestId
-            ) {
+            if (this._snapshot === null) {
+                this._snapshot = fingerprint;
                 return;
             }
 
-            this._snapshot = { total, latestId };
+            if (fingerprint === this._snapshot) {
+                return;
+            }
+
+            this._snapshot = fingerprint;
+
+            if (this.hasRefreshEventValue && this.refreshEventValue) {
+                document.dispatchEvent(
+                    new CustomEvent(this.refreshEventValue, { detail: { fingerprint } }),
+                );
+                return;
+            }
 
             if (typeof frame.reload === 'function') {
                 frame.reload();
             }
         } catch {
-            // Ignore network errors; admin can still pull to refresh.
+            // Network errors are ignored; admin can still refresh manually.
         }
     }
 }

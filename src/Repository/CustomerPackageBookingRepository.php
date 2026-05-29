@@ -141,6 +141,7 @@ class CustomerPackageBookingRepository extends ServiceEntityRepository
             'latestAt' => $latestAt instanceof \DateTimeInterface
                 ? $latestAt->format(\DateTimeInterface::ATOM)
                 : null,
+            'fingerprint' => ((int) ($row['total'] ?? 0)).':'.((int) ($row['latestId'] ?? 0)),
         ];
     }
 }

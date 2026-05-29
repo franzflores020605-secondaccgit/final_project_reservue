@@ -35,7 +35,9 @@
 
         {% set inv = inventoryStats|default({ products_value: 0, packages_value: 0, total_value: 0, sold_traveler_seats: 0 }) %}
 
-        <div class="product-container dashboard-home">
+        <div class="product-container dashboard-home"
+             data-controller="workspace-live-watch"
+             data-workspace-live-watch-check-url-value="{{ path('app_workspace_sync_check', { scope: 'dashboard' }) }}">
 
         {% set bs = bookingStats|default({ total: 0, pending: 0, completed: 0, cancelled: 0 }) %}
 

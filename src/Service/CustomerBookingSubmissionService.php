@@ -67,12 +67,23 @@ final class CustomerBookingSubmissionService
 
             $bookingId = $lead->getId();
             if ($bookingId !== null) {
-                $this->auditLogger->log(
-                    'Book',
-                    'CustomerPackageBooking',
-                    $bookingId,
-                    $this->formatCustomerBookingAuditDetails($lead)
-                );
+                $auditDetails = $this->formatCustomerBookingAuditDetails($lead);
+                if ($submittedBy instanceof User) {
+                    $this->auditLogger->logForUser(
+                        $submittedBy,
+                        'Book',
+                        'CustomerPackageBooking',
+                        $bookingId,
+                        $auditDetails,
+                    );
+                } else {
+                    $this->auditLogger->log(
+                        'Book',
+                        'CustomerPackageBooking',
+                        $bookingId,
+                        $auditDetails,
+                    );
+                }
             }
 
             $connection->commit();

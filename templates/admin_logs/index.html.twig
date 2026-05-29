@@ -7,7 +7,10 @@
 {% endblock %}
 
 {% block dashboard_body %}
-        <div class="product-container">
+        <div class="product-container"
+             data-controller="workspace-live-watch"
+             data-workspace-live-watch-check-url-value="{{ path('app_workspace_sync_check', { scope: 'audit_logs' }) }}"
+             data-workspace-live-watch-refresh-event-value="reservue:audit-logs-refresh">
             <div class="product-header">
                 <h1>
                     <span class="header-icon" aria-hidden="true">🧾</span>
@@ -121,6 +124,9 @@
     });
     document.getElementById('filter-apply').addEventListener('click', function () {
         table.ajax.reload();
+    });
+    document.addEventListener('reservue:audit-logs-refresh', function () {
+        table.ajax.reload(null, false);
     });
 })();
 </script>

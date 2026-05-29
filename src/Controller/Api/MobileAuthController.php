@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
+use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +19,7 @@ final class MobileAuthController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly JWTTokenManagerInterface $jwtManager,
+        private readonly AuditLogger $auditLogger,
     ) {}
 
     #[Route('/login', name: 'login', methods: ['POST'])]
@@ -79,6 +81,14 @@ final class MobileAuthController extends AbstractController
                 'detail' => $this->getParameter('kernel.debug') ? $e->getMessage() : null,
             ], 500);
         }
+
+        $this->auditLogger->logForUser(
+            $user,
+            'Login',
+            'Auth',
+            $user->getId(),
+            'User logged in via mobile app',
+        );
 
         return $this->json([
             'success' => true,

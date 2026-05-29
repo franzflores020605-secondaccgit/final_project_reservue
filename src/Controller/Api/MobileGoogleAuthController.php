@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
+use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,6 +30,7 @@ final class MobileGoogleAuthController extends AbstractController
         private readonly JWTTokenManagerInterface $jwtManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly HttpClientInterface $httpClient,
+        private readonly AuditLogger $auditLogger,
     ) {}
 
     #[Route('/google', name: 'google', methods: ['POST'])]
@@ -99,6 +101,14 @@ final class MobileGoogleAuthController extends AbstractController
         }
 
         $jwt = $this->jwtManager->create($user);
+
+        $this->auditLogger->logForUser(
+            $user,
+            'Login',
+            'Auth',
+            $user->getId(),
+            'User logged in via mobile app (Google)',
+        );
 
         return $this->json([
             'token' => $jwt,

@@ -128,5 +128,25 @@ class AuditLogRepository extends ServiceEntityRepository
             ))->setParameter('gSearch', '%'.$globalSearch.'%');
         }
     }
+
+    /**
+     * @return array{fingerprint: string, total: int, latestId: int}
+     */
+    public function getSyncSnapshot(): array
+    {
+        $row = $this->createQueryBuilder('l')
+            ->select('COUNT(l.id) AS total', 'MAX(l.id) AS latestId')
+            ->getQuery()
+            ->getSingleResult();
+
+        $total = (int) ($row['total'] ?? 0);
+        $latestId = (int) ($row['latestId'] ?? 0);
+
+        return [
+            'total' => $total,
+            'latestId' => $latestId,
+            'fingerprint' => $total.':'.$latestId,
+        ];
+    }
 }
 

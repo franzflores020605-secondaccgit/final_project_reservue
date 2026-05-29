@@ -38,6 +38,29 @@ class AuditLogger
     }
 
     /**
+     * Audit entry when there is no Symfony security session (e.g. mobile JWT login).
+     */
+    public function logForUser(User $user, string $action, string $entity, ?int $entityId = null, ?string $details = null): void
+    {
+        $log = new AuditLog();
+        $log->setAction($action)
+            ->setEntity($entity)
+            ->setEntityId($entityId)
+            ->setDetails($details)
+            ->setUsername($user->getUserIdentifier())
+            ->setUserId($user->getId())
+            ->setRoles($this->determinePrimaryRole($user->getRoles()));
+
+        $ip = $this->requestStack->getCurrentRequest()?->getClientIp();
+        if ($ip) {
+            $log->setIp($ip);
+        }
+
+        $this->em->persist($log);
+        $this->em->flush();
+    }
+
+    /**
      * Return an array with a single primary role (highest priority) or empty array.
      */
     private function determinePrimaryRole(array $roles): array

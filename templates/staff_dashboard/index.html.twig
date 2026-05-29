@@ -9,7 +9,9 @@
 
 {% block dashboard_body %}
         <meta name="turbo-page-title" content="Staff Dashboard">
-        <div class="product-container dashboard-home">
+        <div class="product-container dashboard-home"
+             data-controller="workspace-live-watch"
+             data-workspace-live-watch-check-url-value="{{ path('app_workspace_sync_check', { scope: 'staff_dashboard' }) }}">
 
         <div class="dashboard-stats-intro">
             <h2>Your workspace</h2>

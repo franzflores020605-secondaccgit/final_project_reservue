@@ -3,7 +3,9 @@
 {% block title %}Manage Users{% endblock %}
 
 {% block dashboard_body %}
-        <div class="user-container">
+        <div class="user-container"
+             data-controller="workspace-live-watch"
+             data-workspace-live-watch-check-url-value="{{ path('app_workspace_sync_check', { scope: 'admin_user' }) }}">
             <div class="user-header">
                 <h1>
                     <span class="header-icon" aria-hidden="true">👥</span>

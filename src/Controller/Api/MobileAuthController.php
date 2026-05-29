@@ -82,13 +82,17 @@ final class MobileAuthController extends AbstractController
             ], 500);
         }
 
-        $this->auditLogger->logForUser(
-            $user,
-            'Login',
-            'Auth',
-            $user->getId(),
-            'User logged in via mobile app',
-        );
+        try {
+            $this->auditLogger->logForUser(
+                $user,
+                'Login',
+                'Auth',
+                $user->getId(),
+                'User logged in via mobile app',
+            );
+        } catch (\Throwable) {
+            // Login must succeed even if audit persistence fails.
+        }
 
         return $this->json([
             'success' => true,

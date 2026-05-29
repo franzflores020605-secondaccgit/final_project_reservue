@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\AuditLog;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;

@@ -19,10 +19,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 #[Route('/api/mobile/v1/auth', name: 'api_mobile_v1_auth_')]
 final class MobileGoogleAuthController extends AbstractController
 {
-    /** Web client IDs used by the React Native app (google-services / GoogleSignin.configure). */
+    /**
+     * OAuth client IDs from android/app/google-services.json (web + Android).
+     * ID token "aud" must match one of these (or GOOGLE_MOBILE_CLIENT_IDS on the server).
+     */
     private const MOBILE_GOOGLE_CLIENT_IDS = [
         '765506474739-qdjd532nucuri220vc8gscf39l2ogu71.apps.googleusercontent.com',
-        '765506474739-49b3mr4tn4215rlk8nfdlm6mp0ftjs11.apps.googleusercontent.com',
+        '765506474739-icjkn5uu90ph7t27allqbdritbvuap28.apps.googleusercontent.com',
     ];
 
     public function __construct(
@@ -100,15 +103,27 @@ final class MobileGoogleAuthController extends AbstractController
             $this->entityManager->flush();
         }
 
-        $jwt = $this->jwtManager->create($user);
+        try {
+            $jwt = $this->jwtManager->create($user);
+        } catch (\Throwable $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Server login is not configured (JWT keys). Set JWT_PASSPHRASE on Railway and redeploy.',
+                'detail' => $this->getParameter('kernel.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
 
-        $this->auditLogger->logForUser(
-            $user,
-            'Login',
-            'Auth',
-            $user->getId(),
-            'User logged in via mobile app (Google)',
-        );
+        try {
+            $this->auditLogger->logForUser(
+                $user,
+                'Login',
+                'Auth',
+                $user->getId(),
+                'User logged in via mobile app (Google)',
+            );
+        } catch (\Throwable) {
+            // Login must succeed even if audit persistence fails.
+        }
 
         return $this->json([
             'token' => $jwt,
@@ -126,27 +141,31 @@ final class MobileGoogleAuthController extends AbstractController
      */
     private function verifyGoogleIdToken(string $idToken): ?array
     {
-        $response = $this->httpClient->request(
-            'GET',
-            'https://oauth2.googleapis.com/tokeninfo',
-            ['query' => ['id_token' => $idToken]],
-        );
+        try {
+            $response = $this->httpClient->request(
+                'GET',
+                'https://oauth2.googleapis.com/tokeninfo',
+                ['query' => ['id_token' => $idToken]],
+            );
 
-        if ($response->getStatusCode() !== 200) {
+            if ($response->getStatusCode() !== 200) {
+                return null;
+            }
+
+            $data = $response->toArray(false);
+            if (!\is_array($data) || isset($data['error'])) {
+                return null;
+            }
+
+            $aud = (string) ($data['aud'] ?? '');
+            if ($aud === '' || !\in_array($aud, $this->allowedGoogleClientIds(), true)) {
+                return null;
+            }
+
+            return $data;
+        } catch (\Throwable) {
             return null;
         }
-
-        $data = $response->toArray(false);
-        if (!\is_array($data) || isset($data['error'])) {
-            return null;
-        }
-
-        $aud = (string) ($data['aud'] ?? '');
-        if ($aud === '' || !\in_array($aud, $this->allowedGoogleClientIds(), true)) {
-            return null;
-        }
-
-        return $data;
     }
 
     /**
@@ -154,11 +173,14 @@ final class MobileGoogleAuthController extends AbstractController
      */
     private function allowedGoogleClientIds(): array
     {
-        $fromEnv = trim((string) ($_ENV['GOOGLE_CLIENT_ID'] ?? $_SERVER['GOOGLE_CLIENT_ID'] ?? getenv('GOOGLE_CLIENT_ID') ?: ''));
+        $mobileEnv = trim((string) ($_ENV['GOOGLE_MOBILE_CLIENT_IDS'] ?? $_SERVER['GOOGLE_MOBILE_CLIENT_IDS'] ?? getenv('GOOGLE_MOBILE_CLIENT_IDS') ?: ''));
+        $extra = $mobileEnv !== ''
+            ? array_map('trim', explode(',', $mobileEnv))
+            : [];
 
         return array_values(array_unique(array_filter([
             ...self::MOBILE_GOOGLE_CLIENT_IDS,
-            $fromEnv,
+            ...$extra,
         ])));
     }
 
